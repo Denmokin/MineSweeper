@@ -1,0 +1,304 @@
+/*  MAIN  --------------------------------- */
+:root {
+    --highlightColor: #AF5DFF;
+    --staticColor: #49B6FF;
+    --borderColor: #429DDA;
+    --border2Color: #8D4ACE;
+    --boomColor: #ff4949;
+}
+
+* {
+    font-family: "Montserrat", sans-serif !important;
+    /* animation */
+}
+
+body {
+    /* flex / display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    position: relative;
+    /* dimensions */
+
+    /* animation */
+    transition: all 0.5s;
+}
+
+div {
+    /* Border Div FIX*/
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+h1 {
+    font-size: 50px;
+}
+
+h1 .underline {
+    font-weight: 700;
+    text-underline-offset: 5px;
+    text-decoration: 8px underline;
+    text-decoration-color: var(--highlightColor);
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: 600;
+}
+
+/* TABLE  --------------------------------- */
+
+
+.table-wrapper {
+    /* dimensions */
+    width: fit-content;
+    height: 100%;
+
+    /* flex / display */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    /* gap: 20px; */
+
+    /* other */
+    position: relative;
+    /* margin-top: 20px;
+    margin-bottom: 50%; */
+}
+
+.game-wrapper {
+    height: 100%;
+    width: fit-content;
+
+    /* flex / display */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    gap: 20px;
+
+    /* other */
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 50%;
+}
+
+.underline {
+    font-weight: 800;
+    text-underline-offset: 4px;
+    text-decoration: 4px underline;
+    text-decoration-color: var(--highlightColor);
+}
+
+
+table {
+    /* dimensions */
+    width: 100%;
+
+    /* flex / display */
+    display: flex;
+    align-items: center;
+    align-content: center;
+    gap: 5px;
+
+    /* other */
+    padding: 5px;
+
+    /* other */
+    border: 2px solid;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 5px;
+}
+
+
+table tr {
+    /* flex / display */
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+
+    /* other */
+    padding: 5px;
+}
+
+table td {
+
+    /* dimensions */
+    width: 25px;
+    height: 25px;
+
+    /* flex / display */
+    align-items: center;
+    align-content: center;
+
+    /* other */
+    text-align: center;
+    padding: 5px;
+    background-color: var(--staticColor);
+    color: var(--staticColor);
+    position: relative;
+
+    box-shadow: inset 0 0 0 5px var(--borderColor);
+}
+
+
+table td:hover {
+    background-color: var(--highlightColor);
+    box-shadow: inset 0 0 0 5px var(--border2Color);
+}
+
+
+.revealed {
+    color: white;
+    background-color: var(--highlightColor);
+    box-shadow: inset 0 0 0 0;
+
+}
+
+.boom {
+    background-color: var(--boomColor);
+    box-shadow: inset 0 0 0 0;
+
+}
+
+/* GAME INFO --------------------------------- */
+
+.gameinfo-wrapper {
+    /* dimensions */
+    width: 100%;
+
+    /* flex / display */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    /* other */
+
+    /* animation */
+}
+
+.restart-btn:hover {
+    color: white;
+    background-color: #49B6FF;
+}
+
+
+.restart-btn {
+    /* dimensions */
+    width: 40%;
+    height: 60px;
+
+    /* flex / display */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* other */
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 30px;
+    padding: 5px;
+    border: 2px solid;
+
+    /* animation */
+}
+
+
+.gameinfo {
+
+    /* dimensions */
+    width: 100%;
+    height: 60px;
+
+    /* flex / display */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    /* animation */
+}
+
+.mark {
+    /* dimensions */
+    width: 100%;
+    height: 60px;
+
+    /* flex / display */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* other */
+    font-weight: 600;
+    font-size: 30px;
+    padding: 5px;
+    border: 2px solid;
+
+    /* animation */
+}
+
+
+.timer {
+    /* dimensions */
+    width: 100%;
+    height: 60px;
+    min-width: 150px;
+    /* flex / display */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* other */
+    font-weight: 600;
+    font-size: 30px;
+    padding: 5px;
+    border: 2px solid;
+    /* animation */
+}
+
+
+/* DARKMODE --------------------------------- */
+
+
+.darkmode {
+    border-color: white !important;
+    background-color: #303030;
+    color: white;
+}
+
+.darkmode-switch {
+
+    /* dimensions */
+    width: 4rem;
+    height: 4rem;
+    top: 5%;
+    right: 5%;
+
+    /* animation */
+    transition: all 1s;
+
+    /* other */
+    cursor: pointer;
+    position: fixed;
+
+    /* background */
+    background-position: center;
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+    background-image: url('../img/darkmode.png');
+}
+
+.darkmode-switch:hover {
+    transform: scale(1.1);
+}
