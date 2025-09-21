@@ -16,11 +16,10 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body onclick="" onload="onInit()">
+<body onload="onInit()">
     <div class="darkmode-switch" onclick="switchDarkMode(this)"></div>
-    <div class="game-wrapper">
+    <div oncontextmenu="disableContextMenu(event)" class="game-wrapper">
         <h1>Mine<span class="underline"> Sweeper</span></h1>
-
         <div class="gameinfo-wrapper">
             <div class="gameinfo">
                 <div class="mark">

@@ -121,3 +121,7 @@ function gameInfoBehaviorCSS() {
     elGameInfo.style.width = '100%'
   }
 }
+
+function disableContextMenu(ev) {
+  ev.preventDefault()
+}
