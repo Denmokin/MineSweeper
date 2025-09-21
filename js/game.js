@@ -262,7 +262,7 @@ function restartGame() {
     const elBtn = document.querySelector('.btn')
     const elTimer = document.querySelector('.timer')
     elBtn.innerText = SMILE
-    elTimer.innerText = '00:00:00'
+    elTimer.innerText = '00:00'
 
     // Restart Matrix
     onInit()
