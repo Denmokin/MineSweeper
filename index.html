@@ -27,12 +27,21 @@
                     <div>🚩</div>
                     <div class="mark-count">0</div>
                 </div>
-                <div class="restart-btn" onclick="javascript:location.reload()">😀</div>
+                <div class="btn" onclick="restartGame()">😀</div>
             </div>
             <div class="timer">00:00:00</div>
         </div>
 
         <div class="table-wrapper"></div>
+
+        <div class="diff-wrapper">
+            <h2>Choose Difficulty</h2>
+            <div class="diff-container">
+                <div class="btn diff selected" onclick="difficultyChange(0,this)">🤗</div>
+                <div class="btn diff" onclick="difficultyChange(1,this)">🥵</div>
+                <div class="btn diff" onclick="difficultyChange(2,this)">😈</div>
+            </div>
+        </div>
 
         <h3> By Denis<span class="underline"> Mokin</span></h3>
     </div>

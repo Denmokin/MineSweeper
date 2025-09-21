@@ -6,14 +6,11 @@ var gBoard = []
 var gBoardCellCoords = []
 var gMineCoords = []
 
-// Global Icons.
-const MARKED = '🚩'
-const MINE = '💣'
-const UNMARKED = ''
-const SMILE = '😀'
-const LOSE = '😵'
-const WIN = '😎'
-const SHOCK = '😮'
+const gDifficulty = [
+    { boardSize: 4, minesCount: 2, },
+    { boardSize: 8, minesCount: 12, },
+    { boardSize: 12, minesCount: 32, },
+]
 
 // Global Level Setting.
 const gLevel = {
@@ -28,6 +25,15 @@ const gGame = {
     markedCount: 0,
     secsPassed: 0
 }
+
+// Global Icons.
+const MARKED = '🚩'
+const MINE = '💣'
+const UNMARKED = ''
+const SMILE = '😀'
+const LOSE = '😵'
+const WIN = '😎'
+const SHOCK = '😮'
 
 function onInit() {
 
@@ -56,9 +62,9 @@ function onInit() {
 
 // Game over Function
 function gameOver(isWin) {
-    
+
     //Global Game Over Behaviors
-    const elBtn = document.querySelector('.restart-btn')
+    const elBtn = document.querySelector('.btn')
     gGame.isOn = false // Stops Game (Stops clicking behavior).
     toggleStopwatch() // Toggle (stop) Stopwatch
 
@@ -213,7 +219,7 @@ function isVictory() {
 
 // Face Change Function
 function faceChange() {
-    const elBtn = document.querySelector('.restart-btn')
+    const elBtn = document.querySelector('.btn')
     elBtn.innerText = SHOCK
     setTimeout(() => { elBtn.innerText = SMILE }, 200)
 }
@@ -225,4 +231,33 @@ function markCountUpdate(marked) {
     }
     const elFlags = document.querySelector('.mark-count')
     elFlags.innerText = gGame.markedCount
+}
+
+// Switch Difficulty
+function difficultyChange(num, el) {
+    const elAllDiff = document.querySelectorAll('.diff')
+    for (var i = 0; i < elAllDiff.length; i++) {
+        elAllDiff[i].classList.remove('selected')
+    }
+    el.classList.add('selected')
+    gLevel.SIZE = gDifficulty[num].boardSize
+    gLevel.MINES = gDifficulty[num].minesCount
+    onInit()
+}
+
+
+function restartGame() {
+
+    // Restart DOM
+    const elBtn = document.querySelector('.btn')
+    const elTimer = document.querySelector('.timer')
+    elBtn.innerText = SMILE
+    elTimer.innerText = '00:00:00'
+
+    // Restart Matrix
+    onInit()
+
+    // Restart Stop Watch
+    if (gGame.revealedCount > 0) toggleStopwatch()
+    gGame.revealedCount = 0
 }

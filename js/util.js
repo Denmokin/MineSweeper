@@ -107,13 +107,17 @@ function switchDarkMode(elDrkBtn) {
 
 // Change some CSS properties Function (if GameBoard width is smaller tha 200px)
 function gameInfoBehaviorCSS() {
-    var elGameInfo = document.querySelector('.gameinfo-wrapper')
-    var elBoardSize = document.querySelector('.table-wrapper')
-    var size = elBoardSize.getBoundingClientRect()
 
-    if (size.width < 200) {
-        elGameInfo.style.flexDirection = 'column'
-        elGameInfo.style.width = size.width + 'px'
-    }
-    else return
+  var elGameInfo = document.querySelector('.gameinfo-wrapper')
+  var elBoardSize = document.querySelector('.table-wrapper')
+  var size = elBoardSize.getBoundingClientRect()
+
+  if (size.width < 250) {
+    elGameInfo.style.flexDirection = 'column'
+    elGameInfo.style.width = size.width + 'px'
+  }
+  else {
+    elGameInfo.style.flexDirection = 'row'
+    elGameInfo.style.width = '100%'
+  }
 }

@@ -133,8 +133,8 @@ table tr {
 table td {
 
     /* dimensions */
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
 
     /* flex / display */
     align-items: center;
@@ -161,7 +161,6 @@ table td:hover {
     color: white;
     background-color: var(--highlightColor);
     box-shadow: inset 0 0 0 0;
-
 }
 
 .boom {
@@ -188,13 +187,13 @@ table td:hover {
     /* animation */
 }
 
-.restart-btn:hover {
+.btn:hover {
     color: white;
     background-color: #49B6FF;
 }
 
 
-.restart-btn {
+.btn {
     /* dimensions */
     width: 40%;
     height: 60px;
@@ -267,6 +266,45 @@ table td:hover {
     /* animation */
 }
 
+
+/* DIFFICULTY */
+
+
+.diff { 
+    width: 100%;
+    /* font-size: 1.5rem !important; */
+    padding: 5px;
+}
+
+.diff-wrapper {
+    /* dimensions */
+    width: 100%;
+
+    /* flex / display */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.diff-container {
+    /* dimensions */
+    width: 100%;
+
+
+    /* flex / display */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 5px;
+
+}
+
+.selected {
+    background-color: var(--highlightColor);
+    color: white;
+}
 
 /* DARKMODE --------------------------------- */
 

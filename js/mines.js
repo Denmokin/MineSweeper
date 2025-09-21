@@ -15,6 +15,7 @@ function getAllBoardCellCords(board) {
 function randomMine(mineCount) {
     const randMineCords = []
     var n = gBoardCellCoords.length
+    console.log('n: ', n)
     for (var i = 0; i < mineCount; i++) {
         randMineCords.push(gBoardCellCoords[randIntInclusive(0, n - 1)])
     }
