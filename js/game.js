@@ -149,7 +149,8 @@ function isMarked(coord) {
 // Left Click Function (REVEAL CELL and the Neighbors Around)
 function revealCell(coord, element) {
 
-    if (gGame.revealedCount === 0) toggleStopwatch() // Toggle (start) Stopwatch
+    // Toggle (start) Stopwatch (Only on when revealedCount is 0)
+    if (gGame.revealedCount === 0) toggleStopwatch()
 
     // Checks if the Cell is Revealed or Marked and then Proceeds
     if (gBoard[coord.i][coord.j].isRevealed === false &&
@@ -168,6 +169,7 @@ function revealCell(coord, element) {
             revealCellsAround(coord) // (DOM)
             element.classList.add('revealed') // Adds BG
             faceChange() // Face Change (Like in the ORIGINAL)
+
         }
     }
 }
@@ -235,17 +237,25 @@ function markCountUpdate(marked) {
 
 // Switch Difficulty
 function difficultyChange(num, el) {
+
+    // Find all .selected buttons and remove
     const elAllDiff = document.querySelectorAll('.diff')
     for (var i = 0; i < elAllDiff.length; i++) {
         elAllDiff[i].classList.remove('selected')
     }
+
+    // Add Selected button
     el.classList.add('selected')
+
+    // Change Difficulty
     gLevel.SIZE = gDifficulty[num].boardSize
     gLevel.MINES = gDifficulty[num].minesCount
-    onInit()
+
+    // Restart Game
+    restartGame()
 }
 
-
+// Restart Game Difficulty
 function restartGame() {
 
     // Restart DOM
@@ -258,6 +268,8 @@ function restartGame() {
     onInit()
 
     // Restart Stop Watch
-    if (gGame.revealedCount > 0) toggleStopwatch()
+    if (stopwatchRunning) {
+        toggleStopwatch()
+    }
     gGame.revealedCount = 0
 }
