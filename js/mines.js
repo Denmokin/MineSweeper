@@ -1,5 +1,20 @@
 'use strict'
 
+//Mine Generator.
+function mineGenerator(coord) {
+
+    // Get Mine Locations
+    gMineCoords = randomMine(gLevel.MINES, coord)
+
+    // Add random mines ( by running on the gMineCoords ).
+    for (var i = 0; i < gMineCoords.length; i++) {
+        var mineCoord = gMineCoords[i]
+        gBoard[mineCoord.i][mineCoord.j].isMine = true
+    }
+    setMinesNbrCount() // Neighbor mines counter.
+    console.table(gBoard)
+}
+
 // Creates Array will all board Coordinates
 function getAllBoardCellCords(board) {
     var arr = []
@@ -11,15 +26,18 @@ function getAllBoardCellCords(board) {
     return arr
 }
 
-// Random Mine Coord Finder
-function randomMine(mineCount) {
+// Random Mine Places
+function randomMine(mineCount, coord) {
     const randMineCords = []
     var n = gAllCellCoords.length
-    console.log('n: ', n)
-    for (var i = 0; i < mineCount; i++) {
-        randMineCords.push(gAllCellCoords[randIntInclusive(0, n - 1)])
+
+    while (randMineCords.length !== mineCount) {
+        var randCoord = gAllCellCoords[randIntInclusive(0, (n - 1))]
+
+        // Skips the first click coord
+        if (randCoord.i === coord.i && randCoord.j === coord.j) continue
+        randMineCords.push(randCoord)
     }
-    console.log('randMineCords: ', randMineCords)
     return randMineCords
 }
 

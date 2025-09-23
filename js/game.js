@@ -48,12 +48,8 @@ function onInit() {
     //All possible locations finder (to prevent doubles).
     gAllCellCoords = getAllBoardCellCords(gBoard)
 
-    //Mine Generator.
-    gMineCoords = randomMine(gLevel.MINES)
-
     // Game Board Creation.
     buildBoard() // builds a board and sets some mines.
-    setMinesNbrCount() // Neighbor mines counter.
     renderBoard('.table-wrapper') // Rendering the board.
     gameInfoBehaviorCSS() // Change some CSS properties.
 
@@ -89,23 +85,6 @@ function buildBoard() {
             gBoard[i][j] = customCellObject()
         }
     }
-
-    // Add random mines ( by running on the gMineCoords ).
-    for (var i = 0; i < gMineCoords.length; i++) {
-        var mineCoord = gMineCoords[i]
-        gBoard[mineCoord.i][mineCoord.j].isMine = true
-    }
-}
-
-// Custom cell Object.
-function customCellObject() {
-    const cell = {
-        minesAroundCount: 0,
-        isRevealed: false,
-        isMine: false,
-        isMarked: false,
-    }
-    return cell
 }
 
 // Cell Click Behavior.
@@ -160,7 +139,10 @@ function revealCell(coord, element) {
     }
 
     // Toggle (start) Stopwatch (Only on when revealedCount is 0)
-    if (gGame.revealedCount === 0) toggleStopwatch()
+    if (gGame.revealedCount === 0) {
+        mineGenerator(coord) // Render Mines on first click (gets coords)
+        toggleStopwatch()
+    }
 
     // Checks if the Cell is Revealed or Marked and then Proceeds
     if (!gBoard[coord.i][coord.j].isRevealed &&
@@ -210,7 +192,6 @@ function renderRevealCell(coord) {
         elCell.id = 'revealed' // Used ID to Prevent BUG (With getCellCoords)
         gBoard[coord.i][coord.j].isRevealed = true // Reveal Cell (Model)
         gGame.revealedCount++ // Counts Revealed Cells
-        console.log('gGame.revealedCount: ', gGame.revealedCount)
     }
 
     // If Revealed Removes Mark
@@ -239,19 +220,12 @@ function isVictory() {
     }
 
     if (markCount === gLevel.MINES && // if all mines are marked
-        gGame.revealedCount === (gAllCellCoords.length - gLevel.MINES)  // if all cells are revealed
+        gGame.revealedCount === (gLevel.SIZE ** 2 - gLevel.MINES)  // if all cells are revealed
     ) {
         return gameOver(false) // You Win!
     }
 
     else return
-}
-
-// Face Change Function
-function faceChange() {
-    const elBtn = document.querySelector('.btn')
-    elBtn.innerText = SHOCK
-    setTimeout(() => { elBtn.innerText = SMILE }, 200)
 }
 
 // Mark Count Updater Function
@@ -292,7 +266,6 @@ function restartGame() {
     elBtn.innerText = SMILE
     elTimer.innerText = '00:00'
     gGame.revealedCount = 0
-    console.log('gGame.revealedCount: ', gGame.revealedCount)
 
     // Restart Matrix
     onInit()
@@ -304,3 +277,23 @@ function restartGame() {
 
     return
 }
+
+// Face Change Function
+function faceChange() {
+    const elBtn = document.querySelector('.btn')
+    elBtn.innerText = SHOCK
+    setTimeout(() => { elBtn.innerText = SMILE }, 200)
+}
+
+// Custom cell Object.
+function customCellObject() {
+    const cell = {
+        minesAroundCount: 0,
+        isRevealed: false,
+        isMine: false,
+        isMarked: false,
+    }
+    return cell
+}
+
+
