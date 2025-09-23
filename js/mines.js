@@ -2,22 +2,22 @@
 
 // Creates Array will all board Coordinates
 function getAllBoardCellCords(board) {
-    var boardCellsCords = []
+    var arr = []
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[i].length; j++) {
-            boardCellsCords.push({ i: i, j: j })
+            arr.push({ i: i, j: j })
         }
     }
-    return boardCellsCords
+    return arr
 }
 
 // Random Mine Coord Finder
 function randomMine(mineCount) {
     const randMineCords = []
-    var n = gBoardCellCoords.length
+    var n = gAllCellCoords.length
     console.log('n: ', n)
     for (var i = 0; i < mineCount; i++) {
-        randMineCords.push(gBoardCellCoords[randIntInclusive(0, n - 1)])
+        randMineCords.push(gAllCellCoords[randIntInclusive(0, n - 1)])
     }
     console.log('randMineCords: ', randMineCords)
     return randMineCords

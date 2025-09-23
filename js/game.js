@@ -3,7 +3,7 @@
 
 // Global Arrays.
 var gBoard = []
-var gBoardCellCoords = []
+var gAllCellCoords = []
 var gMineCoords = []
 
 const gDifficulty = [
@@ -46,7 +46,7 @@ function onInit() {
     gBoard = createSquareMatrix(gLevel.SIZE)
 
     //All possible locations finder (to prevent doubles).
-    gBoardCellCoords = getAllBoardCellCords(gBoard)
+    gAllCellCoords = getAllBoardCellCords(gBoard)
 
     //Mine Generator.
     gMineCoords = randomMine(gLevel.MINES)
@@ -61,7 +61,7 @@ function onInit() {
 }
 
 // Game over Function
-function gameOver(isWin) {
+function gameOver(isLose) {
 
     //Global Game Over Behaviors
     const elBtn = document.querySelector('.btn')
@@ -69,14 +69,14 @@ function gameOver(isWin) {
     toggleStopwatch() // Toggle (stop) Stopwatch
 
     // Lose Behavior
-    if (isWin) {
+    if (isLose) {
         minesReveal() // Reveals all the mines.
-        elBtn.innerText = LOSE
+        return elBtn.innerText = LOSE
     }
 
     // Victory Behavior.
     else {
-        elBtn.innerText = WIN
+        return elBtn.innerText = WIN
     }
 }
 
@@ -130,14 +130,19 @@ function cellClicked(element, event) {
 // RightCLick Function (MARK or UNMARK)
 function isMarked(coord) {
 
-    // Checks if the Cell is Revealed or Marked and then Proceeds
-    if (gBoard[coord.i][coord.j].isMarked === false &&
-        gBoard[coord.i][coord.j].isRevealed === false) {
+    //If its Revealed do nothing
+    if (gBoard[coord.i][coord.j].isRevealed) {
+        return
+    }
 
+    // Checks if the Cell is Revealed or Marked and then Proceeds
+    if (!gBoard[coord.i][coord.j].isMarked &&
+        !gBoard[coord.i][coord.j].isRevealed
+    ) {
         gBoard[coord.i][coord.j].isMarked = true // Change ot Marked (Model)
-        isVictory() // Every Mark (checks if all the Mine are marked)
         renderCell(coord, MARKED) // Render Mark (DOM)
         markCountUpdate(true) // Mark count update (DOM),(Modal)
+        isVictory() // Every Mark (checks if all the Mine are marked and revealed)
     }
     else if (gBoard[coord.i][coord.j].isRevealed === false) {
         gBoard[coord.i][coord.j].isMarked = false
@@ -149,12 +154,17 @@ function isMarked(coord) {
 // Left Click Function (REVEAL CELL and the Neighbors Around)
 function revealCell(coord, element) {
 
+    //If its Revealed do nothing
+    if (gBoard[coord.i][coord.j].isRevealed) {
+        return
+    }
+
     // Toggle (start) Stopwatch (Only on when revealedCount is 0)
     if (gGame.revealedCount === 0) toggleStopwatch()
 
     // Checks if the Cell is Revealed or Marked and then Proceeds
-    if (gBoard[coord.i][coord.j].isRevealed === false &&
-        gBoard[coord.i][coord.j].isMarked === false
+    if (!gBoard[coord.i][coord.j].isRevealed &&
+        !gBoard[coord.i][coord.j].isMarked
     ) {
         // Checks if the Cell is Mine
         if (gBoard[coord.i][coord.j].isMine === true) {
@@ -165,10 +175,11 @@ function revealCell(coord, element) {
         }
         // Else Proceeds to Reveal it
         else {
-            gBoard[coord.i][coord.j].isRevealed = true // (Model)
             revealCellsAround(coord) // (DOM)
-            element.classList.add('revealed') // Adds BG
-            faceChange() // Face Change (Like in the ORIGINAL)
+            isVictory() // Every reveal (checks if all the Mine are marked and revealed)
+            if (gGame.isOn) {
+                faceChange() // Face Change (Like in the ORIGINAL)
+            }
 
         }
     }
@@ -176,6 +187,8 @@ function revealCell(coord, element) {
 
 // Reveal all The Neighbor cells that don't contain a Mine
 function revealCellsAround(coord) {
+
+    renderRevealCell(coord) // reveals the clicked cell
 
     // Creates an array with neighbor Coords
     const nbrOpenPoses = countNeighborsArray(gBoard, coord.i, coord.j)
@@ -188,17 +201,26 @@ function revealCellsAround(coord) {
 // Function That reveals one cell at the time
 function renderRevealCell(coord) {
 
-    gGame.revealedCount++ // Counts Revealed Cells
-
     const cellClass = classFromCoord(coord) // Get coords Class
     const elCell = document.querySelector(`.${cellClass}`) // Element from (DOM)
-    const minesCount = gBoard[coord.i][coord.j].minesAroundCount // Mines Count
+    const cellMinesCount = gBoard[coord.i][coord.j].minesAroundCount // Mines Count
 
-    elCell.classList.add('revealed')
-    gBoard[coord.i][coord.j].isRevealed = true
+    // Reveals the cell
+    if (gBoard[coord.i][coord.j].isRevealed === false) {
+        elCell.id = 'revealed' // Used ID to Prevent BUG (With getCellCoords)
+        gBoard[coord.i][coord.j].isRevealed = true // Reveal Cell (Model)
+        gGame.revealedCount++ // Counts Revealed Cells
+        console.log('gGame.revealedCount: ', gGame.revealedCount)
+    }
 
-    if (minesCount !== 0) {// Skips 0 (Skips adding Mine count)
-        renderCell(coord, minesCount)
+    // If Revealed Removes Mark
+    if (gBoard[coord.i][coord.j].isMarked) {
+        gBoard[coord.i][coord.j].isMarked = false
+        markCountUpdate(false) // Updates mark count
+    }
+
+    if (cellMinesCount !== 0) {// Skips 0 (Skips adding Mine count)
+        renderCell(coord, cellMinesCount)
     }
 }
 
@@ -208,14 +230,20 @@ function isVictory() {
     // if not revealed don't check victory
     if (gGame.revealedCount === 0) return
 
-    var count = 0
+    var markCount = 0
     for (var i = 0; i < gMineCoords.length; i++) {
         var mineCoord = gMineCoords[i]
         if (gBoard[mineCoord.i][mineCoord.j].isMarked === true) {
-            count++
+            markCount++
         }
     }
-    if (count === gMineCoords.length) return gameOver(false)
+
+    if (markCount === gLevel.MINES && // if all mines are marked
+        gGame.revealedCount === (gAllCellCoords.length - gLevel.MINES)  // if all cells are revealed
+    ) {
+        return gameOver(false) // You Win!
+    }
+
     else return
 }
 
@@ -263,6 +291,8 @@ function restartGame() {
     const elTimer = document.querySelector('.timer')
     elBtn.innerText = SMILE
     elTimer.innerText = '00:00'
+    gGame.revealedCount = 0
+    console.log('gGame.revealedCount: ', gGame.revealedCount)
 
     // Restart Matrix
     onInit()
@@ -271,5 +301,6 @@ function restartGame() {
     if (stopwatchRunning) {
         toggleStopwatch()
     }
-    gGame.revealedCount = 0
+
+    return
 }
