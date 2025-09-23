@@ -7,15 +7,15 @@ var gAllCellCoords = []
 var gMineCoords = []
 
 const gDifficulty = [
-    { boardSize: 4, minesCount: 2, },
-    { boardSize: 8, minesCount: 12, },
-    { boardSize: 12, minesCount: 32, },
+    { SIZE: 4, MINES: 2, },
+    { SIZE: 8, MINES: 12, },
+    { SIZE: 12, MINES: 32, },
 ]
 
 // Global Level Setting.
 const gLevel = {
-    SIZE: 4,
-    MINES: 2,
+    SIZE: 8,
+    MINES: 12,
 }
 
 // Global Game Properties.
@@ -23,7 +23,8 @@ const gGame = {
     isOn: false,
     revealedCount: 0,
     markedCount: 0,
-    secsPassed: 0
+    secsPassed: 0,
+    lives: 3,
 }
 
 // Global Icons.
@@ -34,13 +35,22 @@ const SMILE = '😀'
 const LOSE = '😵'
 const WIN = '😎'
 const SHOCK = '😮'
+const OUTCH = '😖'
+const LIFE = '❤️'
+const HIT = '💔'
 
 function onInit() {
 
     // Game Properties Set.
     gGame.markedCount = gLevel.MINES
     gGame.isOn = true
+
+    if (gLevel.MINES < 3) {
+        gGame.lives = gLevel.MINES
+    }
+
     markCountUpdate(0)
+    lifeCountUpdate(false)
 
     //Matrix Creation.
     gBoard = createSquareMatrix(gLevel.SIZE)
@@ -64,9 +74,11 @@ function gameOver(isLose) {
     gGame.isOn = false // Stops Game (Stops clicking behavior).
     toggleStopwatch() // Toggle (stop) Stopwatch
 
+
     // Lose Behavior
     if (isLose) {
         minesReveal() // Reveals all the mines.
+        lifeIconChange(true)
         return elBtn.innerText = LOSE
     }
 
@@ -152,20 +164,30 @@ function revealCell(coord, element) {
         if (gBoard[coord.i][coord.j].isMine === true) {
             renderCell(coord, MINE) // (DOM)
             element.classList.add('boom') // Adds BG
-            gameOver(true)
+            lifeCountUpdate(true) // life Counter
+
+            if (gGame.lives === 0) {
+                gameOver(true)
+            }
+
+            if (gGame.isOn) { // If game over don't change Face
+                faceChange(true) // Face When Boom (Like in the ORIGINAL)
+            }
             return
         }
         // Else Proceeds to Reveal it
         else {
             revealCellsAround(coord) // (DOM)
             isVictory() // Every reveal (checks if all the Mine are marked and revealed)
-            if (gGame.isOn) {
-                faceChange() // Face Change (Like in the ORIGINAL)
+
+            if (gGame.isOn) { // If game over don't change Face
+                faceChange(false) // Face Change (Like in the ORIGINAL)
             }
 
         }
     }
 }
+
 
 // Reveal all The Neighbor cells that don't contain a Mine
 function revealCellsAround(coord) {
@@ -205,6 +227,7 @@ function renderRevealCell(coord) {
     }
 }
 
+
 // Is Victory Function (checks mine locations (gMineCoords) every mark)
 function isVictory() {
 
@@ -228,20 +251,11 @@ function isVictory() {
     else return
 }
 
-// Mark Count Updater Function
-function markCountUpdate(marked) {
-    if (marked !== 0) {
-        marked ? gGame.markedCount-- : gGame.markedCount++
-    }
-    const elFlags = document.querySelector('.mark-count')
-    elFlags.innerText = gGame.markedCount
-}
-
 // Switch Difficulty
 function difficultyChange(num, el) {
 
     // Find all .selected buttons and remove
-    const elAllDiff = document.querySelectorAll('.diff')
+    const elAllDiff = document.querySelectorAll('.options-btn')
     for (var i = 0; i < elAllDiff.length; i++) {
         elAllDiff[i].classList.remove('selected')
     }
@@ -250,8 +264,8 @@ function difficultyChange(num, el) {
     el.classList.add('selected')
 
     // Change Difficulty
-    gLevel.SIZE = gDifficulty[num].boardSize
-    gLevel.MINES = gDifficulty[num].minesCount
+    gLevel.SIZE = gDifficulty[num].SIZE
+    gLevel.MINES = gDifficulty[num].MINES
 
     // Restart Game
     restartGame()
@@ -261,39 +275,27 @@ function difficultyChange(num, el) {
 function restartGame() {
 
     // Restart DOM
-    const elBtn = document.querySelector('.btn')
-    const elTimer = document.querySelector('.timer')
+    const elBtn = document.querySelector('.btn') // Reset Restart Button
     elBtn.innerText = SMILE
-    elTimer.innerText = '00:00'
-    gGame.revealedCount = 0
 
-    // Restart Matrix
-    onInit()
+    const elTimer = document.querySelector('.timer')// Reset timer
+    elTimer.innerText = '00:00'
+
+    lifeIconChange(false) // Life icon Change
+
+    // Restart Modal
+    onInit() // Restart Board
+    gGame.revealedCount = 0 // Reveal Count
+    gGame.lives = 3 // Restart Lives
 
     // Restart Stop Watch
     if (stopwatchRunning) {
         toggleStopwatch()
     }
-
-    return
 }
 
-// Face Change Function
-function faceChange() {
-    const elBtn = document.querySelector('.btn')
-    elBtn.innerText = SHOCK
-    setTimeout(() => { elBtn.innerText = SMILE }, 200)
-}
 
-// Custom cell Object.
-function customCellObject() {
-    const cell = {
-        minesAroundCount: 0,
-        isRevealed: false,
-        isMine: false,
-        isMarked: false,
-    }
-    return cell
-}
+
+
 
 

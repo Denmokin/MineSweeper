@@ -21,7 +21,12 @@
     <div oncontextmenu="disableContextMenu(event)" class="game-wrapper">
         <h1>Mine<span class="underline"> Sweeper</span></h1>
         <div class="gameinfo-wrapper">
+
             <div class="gameinfo">
+                <div class="life">
+                    <div class="life-icon">❤️</div>
+                    <div class="life-count">0</div>
+                </div>
                 <div class="mark">
                     <div>🚩</div>
                     <div class="mark-count">0</div>
@@ -33,22 +38,35 @@
 
         <div class="table-wrapper"></div>
 
-        <div class="diff-wrapper">
-            <h2>Choose Difficulty</h2>
+        <div class="game-options-wrapper">
+
             <div class="diff-container">
-                <div class="btn diff selected" onclick="difficultyChange(0,this)">🤗</div>
-                <div class="btn diff" onclick="difficultyChange(1,this)">🥵</div>
-                <div class="btn diff" onclick="difficultyChange(2,this)">😈</div>
+                <h3>Choose Difficulty</h3>
+                <div class="options-btn-container">
+                    <div class="btn options-btn" onclick="difficultyChange(0,this)">🤗</div>
+                    <div class="btn options-btn selected" onclick="difficultyChange(1,this)">🥵</div>
+                    <div class="btn options-btn" onclick="difficultyChange(2,this)">😈</div>
+                </div>
             </div>
+
+            <!-- <div class="hack-container">
+                <h3>Hacks</h3>
+                <div class="options-btn-container">
+                    <div class="btn options-btn selected">1</div>
+                    <div class="btn options-btn">2</div>
+                    <div class="btn options-btn">3</div>
+                </div>
+            </div> -->
         </div>
 
         <h3> By Denis<span class="underline"> Mokin</span></h3>
     </div>
 
     <script src="js/game.js"></script>
+    <script src="js/game-utils.js"></script>
     <script src="js/mines.js"></script>
     <script src="js/timer.js"></script>
-    <script src="js/util.js"></script>
+    <script src="js/global-utils.js"></script>
 
 </body>
 

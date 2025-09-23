@@ -18,8 +18,8 @@ function mineGenerator(coord) {
 // Creates Array will all board Coordinates
 function getAllBoardCellCords(board) {
     var arr = []
-    for (var i = 0; i < board.length; i++) {
-        for (var j = 0; j < board[i].length; j++) {
+    for (var i = 0; i < board.length - 1; i++) {
+        for (var j = 0; j < board[i].length - 1; j++) {
             arr.push({ i: i, j: j })
         }
     }
