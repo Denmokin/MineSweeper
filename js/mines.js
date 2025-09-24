@@ -10,9 +10,9 @@ function isMineClicked(coord, element) {
     markCountUpdate(true)
     lifeCountUpdate(true)
 
-    if (gGame.lives === 0) {
-        gameOver(true)
-    }
+    if (gGame.lives === 0) gameOver(true)
+
+    if (gGame.lives > 0) isVictory()
 
     if (gGame.isOn) { // If game over don't change Face
         faceChange(true) // Face When blowup
