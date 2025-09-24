@@ -17,9 +17,11 @@
 </head>
 
 <body onload="onInit()">
-    <div class="darkmode-switch" onclick="switchDarkMode(this)"></div>
     <div oncontextmenu="disableContextMenu(event)" class="game-wrapper">
-        <h1>Mine<span class="underline"> Sweeper</span></h1>
+        <div class="header-wrapper">
+            <h1>Mine <span class="underline">Sweeper</span></h1>
+            <div class="darkmode-switch" onclick="switchDarkMode(this)"></div>
+        </div>
         <div class="gameinfo-wrapper">
 
             <div class="gameinfo">

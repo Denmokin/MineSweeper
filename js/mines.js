@@ -1,5 +1,25 @@
 'use strict'
 
+// is Mine CLicked?
+function isMineClicked(coord, element) {
+    renderCell(coord, MINE) // Render Mine (DOM)
+    element.classList.add('boom') // Adds Red BG
+    gBoard[coord.i][coord.j].isMarked = true // If blow up mark cell
+
+    //Update counters
+    markCountUpdate(true)
+    lifeCountUpdate(true)
+
+    if (gGame.lives === 0) {
+        gameOver(true)
+    }
+
+    if (gGame.isOn) { // If game over don't change Face
+        faceChange(true) // Face When blowup
+    }
+    return
+}
+
 //Mine Generator.
 function mineGenerator(coord) {
 
@@ -12,7 +32,7 @@ function mineGenerator(coord) {
         gBoard[mineCoord.i][mineCoord.j].isMine = true
     }
     setMinesNbrCount() // Neighbor mines counter.
-    console.table(gBoard)
+    console.table(gBoard)  // Test
 }
 
 // Creates Array will all board Coordinates
@@ -29,14 +49,20 @@ function getAllBoardCellCords(board) {
 // Random Mine Places
 function randomMine(mineCount, coord) {
     const randMineCords = []
-    var n = gAllCellCoords.length
+    var cellCoords = gAllCellCoords.slice() // Copy of global 
 
     while (randMineCords.length !== mineCount) {
-        var randCoord = gAllCellCoords[randIntInclusive(0, (n - 1))]
+        var n = cellCoords.length
+        var randNum = randIntInclusive(0, (n - 1))
+        var randCoord = cellCoords[randNum]
 
         // Skips the first click coord
-        if (randCoord.i === coord.i && randCoord.j === coord.j) continue
+        if (randCoord.i === coord.i && randCoord.j === coord.j) {
+            cellCoords.splice(randNum, 1)
+            continue
+        }
         randMineCords.push(randCoord)
+        cellCoords.splice(randNum, 1) // Remove only if used
     }
     return randMineCords
 }

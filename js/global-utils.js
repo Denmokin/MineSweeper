@@ -7,7 +7,6 @@ function randIntInclusive(min, max) {
 }
 
 // Create matrix filled with value
-
 function createMatrix(rows, cols, value) {
   var mat = []
   for (var i = 0; i < rows; i++) {
@@ -24,26 +23,6 @@ function createMatrix(rows, cols, value) {
 // Create square matrix
 function createSquareMatrix(size, fill) {
   return createMatrix(size, size, fill || '')
-}
-
-// Render board into a container (each cell gets a class like "cell-2-3")
-function renderBoard(selector) {
-
-  // change to what ever function you need
-  const clickEvent = 'cellClicked(this,event)"'
-
-  var strHTML = `<table><tbody>`
-  for (var i = 0; i < gBoard.length; i++) {
-    strHTML += `<tr>`
-    for (var j = 0; j < gBoard[0].length; j++) {
-      strHTML += `<td oncontextmenu="cellClicked(this,event)" 
-            onclick="${clickEvent}" 
-            class="cell-${i}-${j}"></td>`
-    }
-    strHTML += `</tr>`
-  }
-  strHTML += `</tbody></table>`
-  document.querySelector(selector).innerHTML = strHTML
 }
 
 
@@ -97,31 +76,4 @@ function countNeighborsArray(board, rowIdx, colIdx) {
     }
   }
   return arr
-}
-
-// Switch to DarkMode
-function switchDarkMode(elDrkBtn) {
-  const isDarkMode = document.body.classList.toggle('darkmode')
-  elDrkBtn.style.backgroundImage = `url('img/${isDarkMode ? 'whitemode' : 'darkmode'}.png')`
-}
-
-// Change some CSS properties Function (if GameBoard width is smaller tha 200px)
-function gameInfoBehaviorCSS() {
-
-  var elGameInfo = document.querySelector('.gameinfo-wrapper')
-  var elBoardSize = document.querySelector('.table-wrapper')
-  var size = elBoardSize.getBoundingClientRect()
-
-  if (size.width < 250) {
-    elGameInfo.style.flexDirection = 'column'
-    elGameInfo.style.width = size.width + 'px'
-  }
-  else {
-    elGameInfo.style.flexDirection = 'row'
-    elGameInfo.style.width = '100%'
-  }
-}
-
-function disableContextMenu(ev) {
-  ev.preventDefault()
 }

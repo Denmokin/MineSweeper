@@ -9,7 +9,6 @@
 
 * {
     font-family: "Montserrat", sans-serif !important;
-    /* animation */
 }
 
 body {
@@ -33,7 +32,7 @@ div {
 }
 
 h1 {
-    font-size: 50px;
+    font-size: 40px;
 }
 
 h1 .underline {
@@ -55,7 +54,43 @@ h3 {
 }
 
 /* TABLE  --------------------------------- */
+.header-wrapper {
+    height: 100%;
+    width: 100%;
 
+    /* flex / display */
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+}
+
+.game-wrapper {
+    height: 100%;
+    width: fit-content;
+
+    /* flex / display */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+
+    /* other */
+    position: relative;
+    margin-top: 100px;
+    padding: 50epx;
+}
+
+.underline {
+    font-weight: 800;
+    text-underline-offset: 4px;
+    text-decoration: 4px underline;
+    text-decoration-color: var(--highlightColor);
+}
 
 .table-wrapper {
     /* dimensions */
@@ -75,32 +110,6 @@ h3 {
     /* margin-top: 20px;
     margin-bottom: 50%; */
 }
-
-.game-wrapper {
-    height: 100%;
-    width: fit-content;
-
-    /* flex / display */
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    align-content: center;
-    gap: 10px;
-
-    /* other */
-    position: relative;
-    margin-top: 20px;
-    margin-bottom: 50%;
-}
-
-.underline {
-    font-weight: 800;
-    text-underline-offset: 4px;
-    text-decoration: 4px underline;
-    text-decoration-color: var(--highlightColor);
-}
-
 
 table {
     /* dimensions */
@@ -365,7 +374,6 @@ table td:hover {
 
 /* DARKMODE --------------------------------- */
 
-
 .darkmode {
     border-color: white !important;
     background-color: #303030;
@@ -375,22 +383,27 @@ table td:hover {
 .darkmode-switch {
 
     /* dimensions */
-    width: 4rem;
-    height: 4rem;
-    top: 5%;
-    right: 5%;
+    width: 3rem;
+    height: 3rem;
+    top: 5px;
 
     /* other */
     cursor: pointer;
-    position: fixed;
+    position: relative;
 
     /* background */
     background-position: center;
     background-position: 0% 0%;
     background-size: 100% 100%;
     background-image: url('../img/darkmode.png');
+
+    /* animation */
+    transition: all 0.5s;
 }
 
 .darkmode-switch:hover {
     transform: scale(1.1);
+
+    /* animation */
+    transition: all 0.5s;
 }
