@@ -54,7 +54,6 @@ function classFromCoord(coord) {
 function getElementFromCoord(coord) {
   const cellClass = classFromCoord(coord) // Get coords Class
   const elCell = document.querySelector(`.${cellClass}`) // Element from (DOM)
-  // console.log('ggs')
   return elCell
 }
 

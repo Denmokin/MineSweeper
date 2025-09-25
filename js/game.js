@@ -5,7 +5,6 @@
 const gLevel = {
     SIZE: 8,
     MINES: 12,
-    EMPTYCELLS: 0,
 }
 
 // Global Game Properties.
@@ -14,7 +13,7 @@ const gGame = {
     revealedCount: 0,
     emptyCells: 0,
     markedCount: 0,
-    secsPassed: 0,
+    hints: 3,
     lives: 3,
 }
 
@@ -22,7 +21,7 @@ const gGame = {
 var gBoard = []
 var gAllCellCoords = []
 var gMineCoords = []
-
+var gEmptyCells = []
 
 const gDifficulty = [
     { SIZE: 4, MINES: 2, },
@@ -47,17 +46,7 @@ const HIT = '💔'
 function onInit() {
 
     // Game Properties Set.
-    gGame.markedCount = gLevel.MINES
-    gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
-    gGame.isOn = true
-
-    //If less than 3 mines, set lives as Mine Count.
-    if (gLevel.MINES < 3) {
-        gGame.lives = gLevel.MINES
-    }
-
-    markCountUpdate(0)
-    lifeCountUpdate(false)
+    gamePropertiesSet()
 
     //Matrix Creation.
     gBoard = createSquareMatrix(gLevel.SIZE)
@@ -71,7 +60,41 @@ function onInit() {
     gameInfoBehaviorCSS() // Change some CSS properties.
 
     console.table(gBoard) // Test
+
+
+    function gamePropertiesSet() {
+        gGame.markedCount = gLevel.MINES
+        gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
+
+        //If less than 3 mines, Make Changes
+        if (gLevel.MINES < 3) {
+            gGame.hints = 1
+            gGame.lives = gLevel.MINES
+        }
+        markCountUpdate(0)
+        lifeCountUpdate(false)
+        hintCountUpdate(false)
+    }
 }
+
+function gameStarter(coord) {
+
+    gGame.isOn = true // starts the game
+
+    // Get Mine Locations
+    gMineCoords = randomMine(gLevel.MINES, coord)
+
+    // Add random mines ( by running on the gMineCoords ).
+    for (var i = 0; i < gMineCoords.length; i++) {
+        var mineCoord = gMineCoords[i]
+        gBoard[mineCoord.i][mineCoord.j].isMine = true
+    }
+    setMinesNbrCount() // Neighbor mines counter.
+
+    console.table(gBoard)  // Filled Game Board Test
+}
+
+
 
 // Cell Click Behavior.
 function onCellClick(element, event) {
@@ -80,7 +103,7 @@ function onCellClick(element, event) {
     event.preventDefault()
 
     // Game is on?
-    if (!gGame.isOn) return
+    if (!gGame.isOn && gGame.revealedCount > 0) return
 
     var coord = coordFromClass(element.className) // Get Cell Cords
 
@@ -122,7 +145,7 @@ function revealCell(coord, element) {
 
     // Toggle (start) Stopwatch (Only on when revealedCount is 0)
     if (gGame.revealedCount === 0) {
-        mineGenerator(coord) // Render Mines on first click (gets coords)
+        gameStarter(coord) // Starts the game on first click (gets coords)
         toggleStopwatch()
     }
 
@@ -169,7 +192,8 @@ function renderRevealCell(coord) {
     if (gBoard[coord.i][coord.j].isRevealed === false) {
         gBoard[coord.i][coord.j].isRevealed = true // Reveal Cell (Model)
         gGame.revealedCount++ // Counts Revealed Cells
-        addCSStoRevealCell()
+        const elCell = getElementFromCoord(coord)
+        elCell.id = 'revealed'
     }
 
     // If Revealed Removes Mark
@@ -180,12 +204,6 @@ function renderRevealCell(coord) {
 
     if (cellMinesCount !== 0) {// Skips 0 (Skips adding Mine count)
         renderCell(coord, cellMinesCount)
-    }
-
-    function addCSStoRevealCell() {
-        const cellClass = classFromCoord(coord) // Get coords Class
-        const elCell = document.querySelector(`.${cellClass}`) // Element from (DOM)
-        elCell.id = 'revealed'
     }
 }
 
@@ -254,7 +272,7 @@ function difficultyChange(num, el) {
     restartGame()
 
     function removeSelectedCell() {
-        const elAllDiff = document.querySelectorAll('.options-btn')
+        const elAllDiff = document.querySelectorAll('.options')
         for (var i = 0; i < elAllDiff.length; i++) {
             elAllDiff[i].classList.remove('selected')
         }
@@ -275,6 +293,7 @@ function restartGame() {
 
     gGame.revealedCount = 0 // Reveal Count
     gGame.lives = 3 // Restart Lives
+    gGame.hints = 3 // Restart Hints
     lifeCountUpdate(false)
 
     // Restart Matrix

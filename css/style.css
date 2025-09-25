@@ -21,9 +21,8 @@ body {
     position: relative;
 
     /* dimensions */
-    /* height: 100vh; */
     margin-top: 30px;
-    /* margin-bottom: 50px; */
+
 
     /* animation */
     transition: all 0.8s;
