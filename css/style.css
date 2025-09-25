@@ -3,9 +3,14 @@
 :root {
     --highlightColor: #AF5DFF;
     --staticColor: #49B6FF;
-    --borderColor: #429DDA;
-    --border2Color: #8D4ACE;
+    
+    --staticColorBorder: #429DDA;
+    --highlightColorBorder: #8D4ACE;
+    
     --boomColor: #ff4949;
+    
+    --hintColor: #FBD72F;
+    --hintBorderColor: #F6B828;
 }
 
 * {
@@ -164,13 +169,13 @@ table td {
     color: var(--staticColor);
     position: relative;
 
-    box-shadow: inset 0 0 0 5px var(--borderColor);
+    box-shadow: inset 0 0 0 5px var(--staticColorBorder);
 }
 
 
 table td:hover {
     background-color: var(--highlightColor);
-    box-shadow: inset 0 0 0 5px var(--border2Color);
+    box-shadow: inset 0 0 0 5px var(--highlightColorBorder);
 }
 
 
@@ -181,8 +186,8 @@ table td:hover {
 }
 
 .hint {
-    background-color: var(--highlightColor);
-    box-shadow: inset 0 0 0 5px var(--border2Color);
+    background-color: var(--hintColor);
+    box-shadow: inset 0 0 0 5px var(--hintBorderColor);
 }
 
 .boom {

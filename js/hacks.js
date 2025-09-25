@@ -5,11 +5,12 @@
 function hintRandomEmptyCell() {
 
     if (!gGame.isOn || gGame.hints === 0) return
+    if (gGame.revealedCount === gGame.emptyCells) return
 
     const n = gEmptyCells.length
 
     // Gets rand coord from gEmptyCells
-    var randNum = randIntInclusive(0, (n - 1)) 
+    var randNum = randIntInclusive(0, (n - 1))
     var randCoord = gEmptyCells[randNum]
 
     // Checks if Cell is already Revealed
