@@ -50,6 +50,14 @@ function classFromCoord(coord) {
   return `cell-${coord.i}-${coord.j}`
 }
 
+// Get Cell Element
+function getElementFromCoord(coord) {
+  const cellClass = classFromCoord(coord) // Get coords Class
+  const elCell = document.querySelector(`.${cellClass}`) // Element from (DOM)
+  // console.log('ggs')
+  return elCell
+}
+
 // Neighbor Count Object
 function countNeighborsObjects(board, rowIdx, colIdx) {
   var count = 0

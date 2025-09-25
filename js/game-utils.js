@@ -1,12 +1,12 @@
 'use strict'
 
 
-// Mark Count Updater Function
+// Life Count Updater Function
 function lifeCountUpdate(isLose) {
     if (isLose) gGame.lives--
 
-    const elFlags = document.querySelector('.life-count')
-    elFlags.innerText = gGame.lives
+    const elLives = document.querySelector('.life-count')
+    elLives.innerText = gGame.lives
 }
 
 // life Change Function

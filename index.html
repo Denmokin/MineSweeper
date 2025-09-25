@@ -45,20 +45,20 @@
             <div class="diff-container">
                 <h3>Choose Difficulty</h3>
                 <div class="options-btn-container">
-                    <div class="btn options-btn" onclick="difficultyChange(0,this)">🤗</div>
-                    <div class="btn options-btn selected" onclick="difficultyChange(1,this)">🥵</div>
-                    <div class="btn options-btn" onclick="difficultyChange(2,this)">😈</div>
+                    <div class="btn options" onclick="difficultyChange(0,this)">🤗</div>
+                    <div class="btn options selected" onclick="difficultyChange(1,this)">🥵</div>
+                    <div class="btn options" onclick="difficultyChange(2,this)">😈</div>
                 </div>
             </div>
 
-            <!-- <div class="hack-container">
+            <div class="hack-container">
                 <h3>Hacks</h3>
                 <div class="options-btn-container">
-                    <div class="btn options-btn selected">1</div>
-                    <div class="btn options-btn">2</div>
-                    <div class="btn options-btn">3</div>
+                    <div onclick="hintRandomEmptyCell()" class="btn options">💡<div class="hint-count">0</div>
+                    <!-- <div class="btn options-btn">🧿</div>
+                    <div class="btn options-btn">3</div> -->
                 </div>
-            </div> -->
+            </div>
         </div>
 
         <h3> By Denis<span class="underline"> Mokin</span></h3>
@@ -67,6 +67,7 @@
     <script src="js/game.js"></script>
     <script src="js/game-utils.js"></script>
     <script src="js/mines.js"></script>
+    <script src="js/hacks.js"></script>
     <script src="js/timer.js"></script>
     <script src="js/global-utils.js"></script>
 

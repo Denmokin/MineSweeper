@@ -1,4 +1,5 @@
 /*  MAIN  --------------------------------- */
+
 :root {
     --highlightColor: #AF5DFF;
     --staticColor: #49B6FF;
@@ -18,7 +19,11 @@ body {
     align-items: center;
     align-content: center;
     position: relative;
+
     /* dimensions */
+    /* height: 100vh; */
+    margin-top: 30px;
+    /* margin-bottom: 50px; */
 
     /* animation */
     transition: all 0.8s;
@@ -54,6 +59,7 @@ h3 {
 }
 
 /* TABLE  --------------------------------- */
+
 .header-wrapper {
     height: 100%;
     width: 100%;
@@ -81,7 +87,6 @@ h3 {
 
     /* other */
     position: relative;
-    margin-top: 100px;
     padding: 50epx;
 }
 
@@ -103,12 +108,10 @@ h3 {
     flex-direction: column;
     align-items: center;
     align-content: center;
-    /* gap: 20px; */
 
     /* other */
     position: relative;
-    /* margin-top: 20px;
-    margin-bottom: 50%; */
+
 }
 
 table {
@@ -178,10 +181,14 @@ table td:hover {
     box-shadow: inset 0 0 0 0;
 }
 
+.hint {
+    background-color: var(--highlightColor);
+    box-shadow: inset 0 0 0 5px var(--border2Color);
+}
+
 .boom {
     background-color: var(--boomColor);
     box-shadow: inset 0 0 0 0;
-
 }
 
 /* GAME-INFO --------------------------------- */
@@ -324,7 +331,7 @@ table td:hover {
 /* GAME-OPTIONS --------------------------------- */
 
 
-.options-btn {
+.options {
     width: 100%;
     /* font-size: 1.5rem !important; */
     padding: 5px;
