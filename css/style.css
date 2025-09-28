@@ -3,14 +3,17 @@
 :root {
     --highlightColor: #AF5DFF;
     --staticColor: #49B6FF;
-    
+
     --staticColorBorder: #429DDA;
     --highlightColorBorder: #8D4ACE;
-    
+
     --boomColor: #ff4949;
-    
+
     --hintColor: #FBD72F;
     --hintBorderColor: #F6B828;
+
+    --megaHintColor: #c48cfc;
+
 }
 
 * {
@@ -168,6 +171,8 @@ table td {
     background-color: var(--staticColor);
     color: var(--staticColor);
     position: relative;
+    font-size: 1.2rem;
+    font-weight: 700;
 
     box-shadow: inset 0 0 0 5px var(--staticColorBorder);
 }
@@ -182,6 +187,12 @@ table td:hover {
 #revealed {
     color: white;
     background-color: var(--highlightColor);
+    box-shadow: inset 0 0 0 0;
+}
+
+#megaHint {
+    color: var(--highlightColor);
+    background-color: var(--hintColor);
     box-shadow: inset 0 0 0 0;
 }
 

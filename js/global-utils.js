@@ -84,3 +84,10 @@ function countNeighborsArray(board, rowIdx, colIdx) {
   }
   return arr
 }
+
+/// Maybe Global Count Updated***
+function updateCounter(selector, value, decrease) {
+  var newValue = decrease ? value - 1 : value
+  var el = document.querySelector(selector)
+  el.innerText = newValue
+}

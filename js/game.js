@@ -13,8 +13,18 @@ const gGame = {
     revealedCount: 0,
     emptyCells: 0,
     markedCount: 0,
-    hints: 3,
+
     lives: 3,
+
+}
+
+const gHacks = {
+    hints: 3,
+    megaHint: {
+        isOn: false,
+        times: 4,
+        coords: [],
+    },
 }
 
 // Global Arrays.
@@ -63,17 +73,19 @@ function onInit() {
 
 
     function gamePropertiesSet() {
+        gGame.isOn = false
         gGame.markedCount = gLevel.MINES
         gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
 
         //If less than 3 mines, Make Changes
         if (gLevel.MINES < 3) {
-            gGame.hints = 1
+            gHacks.hints = 1
             gGame.lives = gLevel.MINES
         }
         markCountUpdate(0)
         lifeCountUpdate(false)
         hintCountUpdate(false)
+        megaHintCountUpdate(false)
     }
 }
 
@@ -149,6 +161,8 @@ function revealCell(coord, element) {
         toggleStopwatch()
     }
 
+    if (gHacks.megaHint.isOn) return megaHintCoordsPusher(coord)
+
     // Checks if the Cell is Revealed or Marked and then Proceeds
     if (!gBoard[coord.i][coord.j].isRevealed &&
         !gBoard[coord.i][coord.j].isMarked
@@ -172,7 +186,13 @@ function revealCell(coord, element) {
 // Reveal all The Neighbor cells that don't contain a Mine
 function revealCellsAround(coord) {
 
-    renderRevealCell(coord) // reveals the clicked cell
+    renderRevealCell(coord) // reveals the first clicked cell
+
+    // Mines Count
+    const cellMinesCount = gBoard[coord.i][coord.j].minesAroundCount
+
+    // if number reveal only number
+    if (cellMinesCount > 0) return
 
     // Creates an array with neighbor Coords
     const nbrOpenPoses = countNeighborsArray(gBoard, coord.i, coord.j)
@@ -293,8 +313,12 @@ function restartGame() {
 
     gGame.revealedCount = 0 // Reveal Count
     gGame.lives = 3 // Restart Lives
-    gGame.hints = 3 // Restart Hints
     lifeCountUpdate(false)
+
+    // Reset Hacks 
+    gHacks.hints = 3 // Restart Hints
+    gHacks.megaHint.times = 4 // Restart megaHint
+    gHacks.megaHint.isOn = false
 
     // Restart Matrix
     onInit()
