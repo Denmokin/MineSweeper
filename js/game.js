@@ -13,16 +13,14 @@ const gGame = {
     revealedCount: 0,
     emptyCells: 0,
     markedCount: 0,
-
     lives: 3,
-
 }
 
 const gHacks = {
     hints: 3,
     megaHint: {
         isOn: false,
-        times: 4,
+        times: 1,
         coords: [],
     },
 }
