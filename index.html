@@ -13,17 +13,38 @@
         rel="stylesheet">
     <!-- Google fonts END -->
 
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- CSS END -->
+
 </head>
 
 <body onload="onInit()">
+
+
+    <!-- Score Board -->
+    <div class="score-board-wrapper">
+        <div class="score-board-container">
+            <h3>Score Board</h3>
+            <div class="scores-container"></div>
+        </div>
+    </div>
+    <!-- Score Board END -->
+
+
+    <!-- Game Wrapper -->
     <div oncontextmenu="disableContextMenu(event)" class="game-wrapper">
+
+        <!-- Header Wrapper -->
         <div class="header-wrapper">
             <h1>Mine <span class="underline">Sweeper</span></h1>
             <div class="darkmode-switch" onclick="switchDarkMode(this)"></div>
         </div>
-        <div class="gameinfo-wrapper">
+        <!-- Header Wrapper END -->
 
+
+        <!-- Game Top info Settings -->
+        <div class="gameinfo-wrapper">
             <div class="gameinfo">
                 <div class="life">
                     <div class="life-icon">❤️</div>
@@ -33,15 +54,32 @@
                     <div>🚩</div>
                     <div class="mark-count">0</div>
                 </div>
-                <div class="btn" onclick="restartGame()">😀</div>
+                <div class="btn restart" oncontextmenu="rightClickEvent(event)" onclick="restartGame()">😀</div>
             </div>
             <div class="timer">00:00</div>
         </div>
+        <!-- Game Top info Settings END -->
 
-        <div class="table-wrapper"></div>
+        <!-- Game Board Wrapper -->
+        <div class="game-board-wrapper">
+            <div class="modal">
+                <div class="modal-content">
+                    <form class="score-form" onsubmit="getScoreName(event)">
+                        <h3>🏆</h3>
+                        <input type="text" class="modal-score-name" name="name" placeholder="Name?">
+                        <button type="submit" class="btn modal-btn">Submit ✉️</button>
+                    </form>
 
+                </div>
+            </div>
+            <div class="table-wrapper"></div>
+        </div>
+        <!-- Game Board Wrapper END -->
+
+        <!-- Game Bottom Settings -->
         <div class="game-options-wrapper">
 
+            <!-- Difficulty Settings -->
             <div class="diff-container">
                 <h3>Choose Difficulty</h3>
                 <div class="options-btn-container">
@@ -50,27 +88,42 @@
                     <div class="btn options" onclick="difficultyChange(2,this)">😈</div>
                 </div>
             </div>
+            <!-- Difficulty Settings END-->
 
+            <!-- Hack Buttons Container -->
             <div class="hack-container">
                 <h3>Hacks</h3>
                 <div class="options-btn-container">
-                    <div onclick="hintRandomEmptyCell()" alt="Small Hint" class="btn options">💡<div class="hint-count">0</div>
+                    <div onclick="hintRandomEmptyCell()" alt="Small Hint" class="btn options">💡
+                        <div class="hint-count">0</div>
                     </div>
-                    <div onclick="megaHintStarter()" alt="Mega Hint" class="btn options">🧿<div class="megaHint-count">0</div>
+                    <div onclick="megaHintStarter()" alt="Mega Hint" class="btn options">🧿
+                        <div class="megaHint-count">0</div>
                     </div>
                 </div>
             </div>
+            <!-- Hack Buttons Container END -->
+
         </div>
+        <!-- Game Bottom Settings END -->
 
+
+        <!-- Credits -->
         <h3> By Denis<span class="underline"> Mokin</span></h3>
-    </div>
+        <!-- Credits END -->
 
+    </div>
+    <!-- Game Wrapper -->
+
+    <!-- JAVA SCRIPT -->
     <script src="js/game.js"></script>
-    <script src="js/game-utils.js"></script>
     <script src="js/mines.js"></script>
     <script src="js/hacks.js"></script>
     <script src="js/timer.js"></script>
+    <script src="js/score-board.js"></script>
+    <script src="js/game-utils.js"></script>
     <script src="js/global-utils.js"></script>
+    <!-- JAVA SCRIPT END -->
 
 </body>
 

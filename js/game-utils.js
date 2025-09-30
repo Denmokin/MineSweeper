@@ -27,7 +27,7 @@ function markCountUpdate(isMarked) {
 
 // Face Change Function
 function faceChange(isMine) {
-    const elBtn = document.querySelector('.btn')
+    const elBtn = document.querySelector('.restart')
     if (isMine) elBtn.innerText = OUTCH
     else elBtn.innerText = SHOCK
     setTimeout(() => { elBtn.innerText = SMILE }, 200)

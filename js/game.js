@@ -5,15 +5,16 @@
 const gLevel = {
     SIZE: 8,
     MINES: 12,
+    DIFF: 'Medium',
 }
 
 // Global Game Properties.
 const gGame = {
     isOn: false,
+    lives: 3,
     revealedCount: 0,
     emptyCells: 0,
     markedCount: 0,
-    lives: 3,
 }
 
 const gHacks = {
@@ -32,9 +33,9 @@ var gMineCoords = []
 var gEmptyCells = []
 
 const gDifficulty = [
-    { SIZE: 4, MINES: 2, },
-    { SIZE: 8, MINES: 12, },
-    { SIZE: 12, MINES: 32, },
+    { DIFF: 'Easy', SIZE: 4, MINES: 2, },
+    { DIFF: 'Medium', SIZE: 8, MINES: 12, },
+    { DIFF: 'Hard', SIZE: 12, MINES: 32, },
 ]
 
 // Global Icons.
@@ -49,6 +50,8 @@ const OUTCH = '😖'
 const LIFE = '❤️'
 const HIT = '💔'
 
+// Global STUFF:
+var gRightClickCounter
 
 
 function onInit() {
@@ -67,10 +70,14 @@ function onInit() {
     renderBoard('.table-wrapper') // Rendering the board.
     gameInfoBehaviorCSS() // Change some CSS properties.
 
+    // Render Score Board
+    renderScores()
+
     console.table(gBoard) // Test
 
 
     function gamePropertiesSet() {
+
         gGame.isOn = false
         gGame.markedCount = gLevel.MINES
         gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
@@ -84,6 +91,9 @@ function onInit() {
         lifeCountUpdate(false)
         hintCountUpdate(false)
         megaHintCountUpdate(false)
+
+        // 2 Right Clicks on Start Button (Wins The Game)
+        gRightClickCounter = 0
     }
 }
 
@@ -159,6 +169,7 @@ function revealCell(coord, element) {
         toggleStopwatch()
     }
 
+    // Mega Hint Start
     if (gHacks.megaHint.isOn) return megaHintCoordsPusher(coord)
 
     // Checks if the Cell is Revealed or Marked and then Proceeds
@@ -255,10 +266,9 @@ function isVictory() {
 function gameOver(isLose) {
 
     //Global Game Over Behaviors
-    const elBtn = document.querySelector('.btn')
+    const elBtn = document.querySelector('.restart')
     gGame.isOn = false // Stops Game (Stops clicking behavior).
     toggleStopwatch() // Toggle (stop) Stopwatch
-
 
     // Lose Behavior
     if (isLose) {
@@ -269,6 +279,8 @@ function gameOver(isLose) {
 
     // Victory Behavior.
     else {
+        // Opens Score Form
+        toggleModal()
         return elBtn.innerText = WIN
     }
 }
@@ -277,7 +289,7 @@ function gameOver(isLose) {
 function difficultyChange(num, el) {
 
     // Find all .selected buttons and remove
-    removeSelectedCell()
+    removeSelectedCssFromCell()
 
     // Add Selected button
     el.classList.add('selected')
@@ -286,10 +298,13 @@ function difficultyChange(num, el) {
     gLevel.SIZE = gDifficulty[num].SIZE
     gLevel.MINES = gDifficulty[num].MINES
 
+    // Change Diff Name for Score
+    gLevel.DIFF = gDifficulty[num].DIFF
+
     // Restart Game
     restartGame()
 
-    function removeSelectedCell() {
+    function removeSelectedCssFromCell() {
         const elAllDiff = document.querySelectorAll('.options')
         for (var i = 0; i < elAllDiff.length; i++) {
             elAllDiff[i].classList.remove('selected')
@@ -301,7 +316,7 @@ function difficultyChange(num, el) {
 function restartGame() {
 
     // Restart DOM
-    const elBtn = document.querySelector('.btn') // Reset Restart Button
+    const elBtn = document.querySelector('.restart') // Reset Restart Button
     elBtn.innerText = SMILE
 
     const elTimer = document.querySelector('.timer')// Reset timer
@@ -315,7 +330,7 @@ function restartGame() {
 
     // Reset Hacks 
     gHacks.hints = 3 // Restart Hints
-    gHacks.megaHint.times = 4 // Restart megaHint
+    gHacks.megaHint.times = 1 // Restart megaHint
     gHacks.megaHint.isOn = false
 
     // Restart Matrix

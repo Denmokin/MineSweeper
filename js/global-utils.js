@@ -91,3 +91,8 @@ function updateCounter(selector, value, decrease) {
   var el = document.querySelector(selector)
   el.innerText = newValue
 }
+
+function toggleModal() {
+  var el = document.querySelector('.modal')
+  if (el) el.classList.toggle('modal-open')
+}

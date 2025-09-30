@@ -5,6 +5,7 @@ function addHintCss(coord) {
     const elCell = getElementFromCoord(coord)
     elCell.classList.add('hint')
 
+    console.log('coord: ', elCell)
     // Removes CSS + coord from gEmptyCells Array
     setTimeout(() => {
         elCell.classList.remove('hint')
@@ -156,5 +157,21 @@ function globalRevealCellsAround(coords, reverse) {
     for (var i = 0; i < coords.length; i++) {
         var pos = coords[i]
         megaHintRevealCell(pos, reverse) // Reveal Cell
+    }
+}
+
+// Right Click WIN (TEST-HACK)
+function rightClickEvent(ev) {
+
+    // Disables Context Menu Behavior
+    ev.preventDefault()
+    
+    if (!gGame.isOn) return
+
+    // Right Click Event
+    if (ev.type === 'contextmenu') {
+        gRightClickCounter++
+        if (gRightClickCounter === 2)
+            gameOver(false)
     }
 }
