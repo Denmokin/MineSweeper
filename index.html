@@ -54,7 +54,7 @@
                     <div>🚩</div>
                     <div class="mark-count">0</div>
                 </div>
-                <div class="btn restart" oncontextmenu="rightClickEvent(event)" onclick="restartGame()">😀</div>
+                <div class="btn restart" oncontextmenu="winGameHack(event)" onclick="restartGame()">😀</div>
             </div>
             <div class="timer">00:00</div>
         </div>
@@ -100,6 +100,9 @@
                     <div onclick="megaHintStarter()" alt="Mega Hint" class="btn options">🧿
                         <div class="megaHint-count">0</div>
                     </div>
+                    <div onclick="removeMinesHack(gRemoveMineCount)" alt="Remove Mines" class="btn options">🧯
+                        <div class="removeMines-count">0</div>
+                    </div>
                 </div>
             </div>
             <!-- Hack Buttons Container END -->
@@ -109,7 +112,7 @@
 
 
         <!-- Credits -->
-        <h3> By Denis<span class="underline"> Mokin</span></h3>
+        <h3 oncontextmenu="revealHack(event)"> By Denis<span class="underline"> Mokin</span></h3>
         <!-- Credits END -->
 
     </div>

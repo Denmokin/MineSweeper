@@ -1,5 +1,7 @@
 'use strict'
 
+var gRemoveMineCount = 3
+
 
 function addHintCss(coord) {
     const elCell = getElementFromCoord(coord)
@@ -12,6 +14,9 @@ function addHintCss(coord) {
     }, 2000)
 }
 
+
+////////////////////--------- Hint HACK ----------//////////////////////////
+
 // Hint Reveal Function
 function hintRandomEmptyCell() {
 
@@ -21,12 +26,12 @@ function hintRandomEmptyCell() {
     const n = gEmptyCells.length
 
     // Gets rand coord from gEmptyCells
-    var randNum = randIntInclusive(0, (n - 1))
+    var randNum = randIntInclusive(0, n)
     var randCoord = gEmptyCells[randNum]
 
     // Checks if Cell is already Revealed
     while (gBoard[randCoord.i][randCoord.j].isRevealed === true) {
-        randNum = randIntInclusive(0, (n - 1))
+        randNum = randIntInclusive(0, n)
         randCoord = gEmptyCells[randNum]
     }
 
@@ -48,7 +53,7 @@ function hintCountUpdate(isUsed) {
 }
 
 
-//////////////////////////////////////////////////////////////////////
+////////////////////------Mega Hint HACK----------//////////////////////////
 
 
 // Mega Hint Clicked Cell Pusher
@@ -89,10 +94,10 @@ function megaHint(coord1, coord2) {
 
 
     // Reveal Cells  
-    globalRevealCellsAround(coords, false)
+    megaHintRevealCellsAround(coords, false)
 
     // Reverse Reveal
-    setTimeout(() => globalRevealCellsAround(coords, true), 2000)
+    setTimeout(() => megaHintRevealCellsAround(coords, true), 2000)
 
     // Reset Mega Hint
     gHacks.megaHint.isOn = false
@@ -103,7 +108,7 @@ function megaHint(coord1, coord2) {
 //Mega Hint Starter (If clicked revealCell Function gets A new Condition)
 function megaHintStarter() {
     // Start only wen game is on
-    if (!gGame.isOn || gHacks.megaHint.times === 0) return
+    if (!gGame.isOn || gHacks.megaHint.count === 0) return
     gHacks.megaHint.isOn = true
     megaHintCountUpdate(true)
 }
@@ -111,9 +116,9 @@ function megaHintStarter() {
 
 // MegaHint Count Updater
 function megaHintCountUpdate(isUsed) {
-    if (isUsed) gHacks.megaHint.times--
+    if (isUsed) gHacks.megaHint.count--
     const elHints = document.querySelector('.megaHint-count')
-    elHints.innerText = gHacks.megaHint.times
+    elHints.innerText = gHacks.megaHint.count
 }
 
 
@@ -152,20 +157,89 @@ function megaHintRevealCell(coord, reverse) {
 
 }
 
-// Global revealCellsAround
-function globalRevealCellsAround(coords, reverse) {
+// Global Mega Hint Reveal Cells Around
+function megaHintRevealCellsAround(coords, reverse) {
     for (var i = 0; i < coords.length; i++) {
         var pos = coords[i]
         megaHintRevealCell(pos, reverse) // Reveal Cell
     }
 }
 
+
+//////////////--------Remove Mines Hack--------///////////////
+
+
+// Remove Mines Hack Function
+
+function removeMinesHack(count) {
+
+
+    if (!gGame.isOn || gHacks.removeMines === 0) return
+
+    removeMinesCountUpdate(true)
+
+    const mineCoordsCopy = gMineCoords.slice()
+
+    var n = mineCoordsCopy.length
+
+    console.log('gMineCoords: ', gMineCoords)
+    for (var i = 0; i <= count; i++) {
+
+        var randNum = randIntInclusive(0, n - 1)
+        var randMine = mineCoordsCopy[randNum]
+
+        while (gBoard[randMine.i][randMine.j].isRevealed === true) {
+            randNum = randIntInclusive(0, n - 1)
+            randMine = mineCoordsCopy[randNum]
+        }
+
+        // Removes USED coord from Array
+        mineCoordsCopy.splice[randNum, 1]
+
+        gBoard[randMine.i][randMine.j].isMine = false
+
+    }
+
+    setMinesNbrCount() // Count Mines Again
+    removeMinesRevealUpdate() // Reveal Update
+}
+
+// Remove Mines Count Updater
+function removeMinesCountUpdate(isUsed) {
+    if (isUsed) gHacks.removeMines--
+    const elHints = document.querySelector('.removeMines-count')
+    elHints.innerText = gHacks.removeMines
+}
+
+
+// Remove Mines Reveal Update Function
+function removeMinesRevealUpdate() {
+
+    for (var i = 0; i < gAllCellCoords.length; i++) {
+
+        var coord = gAllCellCoords[i]
+
+        var cellMinesCount = gBoard[coord.i][coord.j].minesAroundCount
+
+        if (gBoard[coord.i][coord.j].isRevealed) {
+            if (gBoard[coord.i][coord.j].isMine) renderCell(coord, MINE)
+            else if (cellMinesCount === 0) renderCell(coord, '')
+            else renderCell(coord, cellMinesCount)
+        }
+    }
+}
+
+
+///////////////-----------DEV HACKS----------/////////////////
+
+
+
 // Right Click WIN (TEST-HACK)
-function rightClickEvent(ev) {
+function winGameHack(ev) {
 
     // Disables Context Menu Behavior
     ev.preventDefault()
-    
+
     if (!gGame.isOn) return
 
     // Right Click Event
@@ -174,4 +248,40 @@ function rightClickEvent(ev) {
         if (gRightClickCounter === 2)
             gameOver(false)
     }
+}
+
+
+// Right revealHack (TEST-HACK)
+function revealHack(ev) {
+
+    // Disables Context Menu Behavior
+    ev.preventDefault()
+
+    if (!gGame.isOn) return
+
+    // Right Click Event
+    if (ev.type === 'contextmenu') {
+        revealHackCellsAround(gAllCellCoords)
+    }
+
+    function revealHackCellsAround(coords) {
+        for (var i = 0; i < coords.length; i++) {
+            var pos = coords[i]
+            renderRevealCell2(pos) // Reveal Cell
+        }
+    }
+}
+
+function revealHackReveal(coord) {
+
+    // Mines Count
+    const cellMinesCount = gBoard[coord.i][coord.j].minesAroundCount
+
+    const elCell = getElementFromCoord(coord)
+    elCell.id = 'revealed'
+
+    if (gBoard[coord.i][coord.j].isMine) renderCell(coord, MINE)
+    else if (cellMinesCount === 0) renderCell(coord, '')
+    else renderCell(coord, cellMinesCount)
+
 }

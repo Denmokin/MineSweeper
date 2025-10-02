@@ -19,9 +19,10 @@ const gGame = {
 
 const gHacks = {
     hints: 3,
+    removeMines: 1,
     megaHint: {
         isOn: false,
-        times: 1,
+        count: 2,
         coords: [],
     },
 }
@@ -30,7 +31,6 @@ const gHacks = {
 var gBoard = []
 var gAllCellCoords = []
 var gMineCoords = []
-var gEmptyCells = []
 
 const gDifficulty = [
     { DIFF: 'Easy', SIZE: 4, MINES: 2, },
@@ -65,6 +65,10 @@ function onInit() {
     //All possible locations finder (to prevent doubles).
     gAllCellCoords = getAllBoardCellCords(gBoard)
 
+    
+    console.log('gAllCellCoords: ', gAllCellCoords)
+    console.log('gBoard: ', gBoard)
+
     // Game Board Creation.
     buildBoard() // builds a board
     renderBoard('.table-wrapper') // Rendering the board.
@@ -91,6 +95,7 @@ function onInit() {
         lifeCountUpdate(false)
         hintCountUpdate(false)
         megaHintCountUpdate(false)
+        removeMinesCountUpdate(false)
 
         // 2 Right Clicks on Start Button (Wins The Game)
         gRightClickCounter = 0
@@ -112,6 +117,7 @@ function gameStarter(coord) {
     setMinesNbrCount() // Neighbor mines counter.
 
     console.table(gBoard)  // Filled Game Board Test
+    console.log('gAllCellCoords: ', gAllCellCoords)
 }
 
 
@@ -330,8 +336,9 @@ function restartGame() {
 
     // Reset Hacks 
     gHacks.hints = 3 // Restart Hints
-    gHacks.megaHint.times = 1 // Restart megaHint
+    gHacks.megaHint.count = 2 // Restart megaHint
     gHacks.megaHint.isOn = false
+    gHacks.removeMines = 1
 
     // Restart Matrix
     onInit()

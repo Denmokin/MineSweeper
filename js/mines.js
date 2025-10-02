@@ -1,7 +1,12 @@
 'use strict'
 
+// Global Arrays.
+var gEmptyCells = []
+
+
 // is Mine CLicked?
 function isMineClicked(coord, element) {
+
     renderCell(coord, MINE) // Render Mine (DOM)
     element.classList.add('boom') // Adds Red BG
     gBoard[coord.i][coord.j].isMarked = true // If blow up mark cell
@@ -23,8 +28,8 @@ function isMineClicked(coord, element) {
 // Creates Array will all board Coordinates
 function getAllBoardCellCords(board) {
     var arr = []
-    for (var i = 0; i < board.length - 1; i++) {
-        for (var j = 0; j < board[i].length - 1; j++) {
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[i].length; j++) {
             arr.push({ i: i, j: j })
         }
     }
@@ -36,9 +41,11 @@ function randomMine(mineCount, coord) {
     const randMineCords = []
     var cellCoords = gAllCellCoords.slice() // Copy of global 
 
+    console.log('cellCoords: ', cellCoords)
+
     while (randMineCords.length !== mineCount) {
         var n = cellCoords.length
-        var randNum = randIntInclusive(0, (n - 1))
+        var randNum = randIntInclusive(0, n - 1)
         var randCoord = cellCoords[randNum]
 
         // Skips the first click coord
@@ -50,7 +57,7 @@ function randomMine(mineCount, coord) {
         cellCoords.splice(randNum, 1) // Remove only if used
     }
 
-    gEmptyCells = cellCoords // gets Empty cell Cords 
+    gEmptyCells = cellCoords // gets Empty cell Cords (for HACKS)
 
     return randMineCords
 }

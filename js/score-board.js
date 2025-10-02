@@ -6,7 +6,7 @@ var gScoreName //  Global Score Name Value
 
 // CLear all Scores Function
 function clearScores() {
-    // Hide Board
+    //Hide Board
     const elBoardWrapper = document.querySelector('.score-board-container')
     elBoardWrapper.style.display = 'none'
 
@@ -18,6 +18,7 @@ function clearScores() {
 }
 
 function addScore(name) {
+    
     // Get Timer
     const elScoreTime = document.querySelector('.timer')
     gScoreTimer = elScoreTime.innerText
@@ -52,7 +53,7 @@ function renderScores() {
 
     // Adds Only One clearButton
     if (scores.length > 0) strHtml += resetButton
-   
+
     //  Render the Scores Board
     for (var i = 0; i < scores.length; i++) {
 
@@ -96,4 +97,13 @@ function getScoreName(ev) {
         convertedName = name.substring(0, 1).toUpperCase() + name.substring(1, name.length)
         return convertedName
     }
+}
+
+function checkForBetterTime() {
+    const elScoreTime = document.querySelector('.timer')
+    gScoreTimer = elScoreTime.innerText
+    var timeSplit = gScoreTimer.split(':')
+    var timeCombine = timeSplit[0] + timeSplit[1]
+
+
 }
