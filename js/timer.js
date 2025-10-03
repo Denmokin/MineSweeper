@@ -25,3 +25,10 @@ function toggleStopwatch(selector) {
   }
   stopwatchRunning = !stopwatchRunning
 }
+
+
+function timerScore(seconds) {
+  var min = Math.floor(seconds / 60) + ''
+  var sec = seconds % 60 + ''
+  return min.padStart(2, '0') + ':' + sec.padStart(2, '0')
+}

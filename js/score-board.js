@@ -3,6 +3,9 @@
 var gScoreTimer // Global Score Timer Value
 var gScoreName //  Global Score Name Value
 
+// Intervals
+var gScoreTimerInterval
+
 
 // CLear all Scores Function
 function clearScores() {
@@ -17,14 +20,29 @@ function clearScores() {
     renderScores()
 }
 
-function addScore(name) {
-    
-    // Get Timer
-    const elScoreTime = document.querySelector('.timer')
-    gScoreTimer = elScoreTime.innerText
+function addScore(curName) {
+
+    //Get Timer
+    var scoreTime = gGame.secsPassed
+    var scoreName = curName + `\n` + gLevel.DIFF
+
+    // Get object Array of Local Storage
+    var scores = Object.entries(localStorage)
+
+    // Don't Update Score it it is not Better
+    for (var i = 0; i < scores.length; i++) {
+        var name = scores[i][0]
+        var time = scores[i][1]
+
+        console.log('name: ', name)
+        if (name === scoreName && +scoreTime > +time) {
+            return
+        }
+
+    }
 
     // Add Score with Entered name and Difficulty
-    localStorage.setItem(name + `\n` + gLevel.DIFF, gScoreTimer)
+    localStorage.setItem(scoreName, scoreTime)
     console.log('localStorage: ', localStorage)
     // Render Board
     renderScores()
@@ -62,7 +80,7 @@ function renderScores() {
 
         var score = `<div class="score">
                 <p>${name}</p> 
-                <p>${time}</p></div>`
+                <p>${timerScore(time)}</p></div>` // Converts Seconds to Score View Timer
 
         strHtml += score
     }
@@ -71,6 +89,7 @@ function renderScores() {
 }
 
 // Get Score name Function from FORM submission
+
 
 function getScoreName(ev) {
 

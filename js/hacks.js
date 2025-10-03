@@ -267,7 +267,7 @@ function revealHack(ev) {
     function revealHackCellsAround(coords) {
         for (var i = 0; i < coords.length; i++) {
             var pos = coords[i]
-            renderRevealCell2(pos) // Reveal Cell
+            revealHackReveal(pos) // Reveal Cell
         }
     }
 }

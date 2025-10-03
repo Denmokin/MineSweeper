@@ -15,6 +15,7 @@ const gGame = {
     revealedCount: 0,
     emptyCells: 0,
     markedCount: 0,
+    secsPassed: 0,
 }
 
 const gHacks = {
@@ -65,7 +66,7 @@ function onInit() {
     //All possible locations finder (to prevent doubles).
     gAllCellCoords = getAllBoardCellCords(gBoard)
 
-    
+
     console.log('gAllCellCoords: ', gAllCellCoords)
     console.log('gBoard: ', gBoard)
 
@@ -82,6 +83,7 @@ function onInit() {
 
     function gamePropertiesSet() {
 
+
         gGame.isOn = false
         gGame.markedCount = gLevel.MINES
         gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
@@ -91,6 +93,7 @@ function onInit() {
             gHacks.hints = 1
             gGame.lives = gLevel.MINES
         }
+
         markCountUpdate(0)
         lifeCountUpdate(false)
         hintCountUpdate(false)
@@ -116,8 +119,10 @@ function gameStarter(coord) {
     }
     setMinesNbrCount() // Neighbor mines counter.
 
+    // Get Timer For Score
+    gScoreTimerInterval = setInterval(() => { gGame.secsPassed++ }, 1000)
+
     console.table(gBoard)  // Filled Game Board Test
-    console.log('gAllCellCoords: ', gAllCellCoords)
 }
 
 
@@ -275,6 +280,7 @@ function gameOver(isLose) {
     const elBtn = document.querySelector('.restart')
     gGame.isOn = false // Stops Game (Stops clicking behavior).
     toggleStopwatch() // Toggle (stop) Stopwatch
+    clearInterval(gScoreTimerInterval) // Stop Score Timer Interval
 
     // Lose Behavior
     if (isLose) {
@@ -332,6 +338,7 @@ function restartGame() {
 
     gGame.revealedCount = 0 // Reveal Count
     gGame.lives = 3 // Restart Lives
+    gGame.secsPassed = 0 // Restart Lives
     lifeCountUpdate(false)
 
     // Reset Hacks 

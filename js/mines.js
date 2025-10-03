@@ -20,7 +20,7 @@ function isMineClicked(coord, element) {
     if (gGame.lives > 0) isVictory()
 
     if (gGame.isOn) { // If game over don't change Face
-        faceChange(true) // Face When blowup
+        faceChange(true) // Face When BlowUp
     }
     return
 }
