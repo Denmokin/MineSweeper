@@ -397,6 +397,7 @@ function restartGame() {
     gHacks.megaHint.isOn = false
 
     gHacks.removeMines = 1 // Restart RemoveMines
+    gRemoveMineCount = 3
     removeMinesGlobalRestart()
 
     gHacks.stepBack.count = 5 // Restart stepBack
