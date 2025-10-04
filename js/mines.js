@@ -11,6 +11,10 @@ function isMineClicked(coord, element) {
     element.classList.add('boom') // Adds Red BG
     gBoard[coord.i][coord.j].isMarked = true // If blow up mark cell
 
+    // Step Back Record
+    stepBackHackRecorder(coord)
+    gHacks.stepBack.recCount++
+
     //Update counters
     markCountUpdate(true)
     lifeCountUpdate(true)
@@ -44,8 +48,8 @@ function randomMine(mineCount, coord) {
     console.log('cellCoords: ', cellCoords)
 
     while (randMineCords.length !== mineCount) {
-        var n = cellCoords.length
-        var randNum = randIntInclusive(0, n - 1)
+        var n = (cellCoords.length - 1)
+        var randNum = randIntInclusive(0, n)
         var randCoord = cellCoords[randNum]
 
         // Skips the first click coord

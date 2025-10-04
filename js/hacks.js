@@ -29,7 +29,7 @@ function hintRandomEmptyCell() {
     if (!gGame.isOn || gHacks.hints === 0) return
     if (gGame.revealedCount === gGame.emptyCells) return
 
-    const n = gEmptyCells.length
+    const n = (gEmptyCells.length - 1)
 
     // Gets rand coord from gEmptyCells
     var randNum = randIntInclusive(0, n)
@@ -189,11 +189,13 @@ function removeMinesHack(count) {
 
     for (var i = 0; i < count; i++) {
 
-        var randNum = randIntInclusive(0, gMineCoords.length - 1)
+        var n = (gMineCoords.length - 1)
+
+        var randNum = randIntInclusive(0, n)
         var randMine = gMineCoords[randNum]
 
         while (gBoard[randMine.i][randMine.j].isRevealed === true) {
-            randNum = randIntInclusive(0, gMineCoords.length - 1)
+            randNum = randIntInclusive(0, n)
             randMine = gMineCoords[randNum]
         }
 
@@ -254,42 +256,57 @@ function removeMinesGlobalRestart() {
 
 //////////////-------- Step Back Hack --------///////////////
 
-
-function stepRecorder(coord) {
-    var stepBackCount = gHacks.stepBack.stepRecCount
-    gStepCellsRecorder[stepBackCount].push(coord)
-    console.log('stepBackCount: ', stepBackCount)
+// Steps Recorder Function
+function stepBackHackRecorder(coord) {
+    var stepBackCell = gHacks.stepBack.recCount // Gets Step Back Array(Order)
+    gStepCellsRecorder[stepBackCell].push(coord) // Pushes (Coords)
 }
 
 
+// StepsBack Hack Function
 function stepBackHack() {
 
-    if (!gGame.isOn || gHacks.stepBack.count === 0) return
+    // If These Behavior ar False Return
+    if (!gGame.isOn || gHacks.stepBack.count === 0 ||
+        isEmpty(gStepCellsRecorder)) return
 
+    // Update Dom StepBack Count   
     stepBackCountUpdate(true)
 
-    const stepBack = gStepCellsRecorder[gHacks.stepBack.stepRecCount - 1]
+    // Get The current coords Array
+    const stepBackCoords = gStepCellsRecorder[gHacks.stepBack.recCount - 1]
 
-    for (var i = 0; i < stepBack.length; i++) {
-        var coord = stepBack[i]
+    for (var i = 0; i < stepBackCoords.length; i++) {
+        var coord = stepBackCoords[i]
 
         const elCell = getElementFromCoord(coord)
-        elCell.removeAttribute('id')
+        elCell.removeAttribute('id') // Remove Reveal CSS
 
+        // If its a mine Behavior
         if (gBoard[coord.i][coord.j].isMine && gBoard[coord.i][coord.j].isMarked) {
+            gBoard[coord.i][coord.j].isRevealed = false
+            gBoard[coord.i][coord.j].isMarked = false
+
+            //Life Back
             gGame.lives++
             lifeCountUpdate(false)
-            gBoard[coord.i][coord.j].isRevealed = false
-            renderCell(coord, '')
+
+             //Mark Back
+            gGame.markedCount++
+            markCountUpdate(0)
+            
+            // CSS Remove
             elCell.classList.remove('boom')
         }
 
+        // Else Regular cells
         gBoard[coord.i][coord.j].isRevealed = false
         renderCell(coord, '')
     }
 
-    gStepCellsRecorder[gHacks.stepBack.stepRecCount] = []
-    gHacks.stepBack.stepRecCount--
+    // Delete the used Object
+    delete gStepCellsRecorder[gHacks.stepBack.recCount - 1]
+    gHacks.stepBack.recCount--
 }
 
 // Remove Mines Count Updater
@@ -299,6 +316,10 @@ function stepBackCountUpdate(isUsed) {
     elHints.innerText = gHacks.stepBack.count
 }
 
+// is Object Empty
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0
+}
 
 ///////////////-----------DEV HACKS----------/////////////////
 
@@ -315,30 +336,17 @@ function winGameHack(ev) {
     // Right Click Event
     if (ev.type === 'contextmenu') {
         gRightClickCounter++
-        if (gRightClickCounter === 2)
+        if (gRightClickCounter === 2) {
+            revealHackCellsAround(gAllCellCoords)
             gameOver(false)
+        }
     }
 }
 
-
-// Right revealHack (TEST-HACK)
-function revealHack(ev) {
-
-    // Disables Context Menu Behavior
-    ev.preventDefault()
-
-    if (!gGame.isOn) return
-
-    // Right Click Event
-    if (ev.type === 'contextmenu') {
-        revealHackCellsAround(gAllCellCoords)
-    }
-
-    function revealHackCellsAround(coords) {
-        for (var i = 0; i < coords.length; i++) {
-            var pos = coords[i]
-            revealHackReveal(pos) // Reveal Cell
-        }
+function revealHackCellsAround(coords) {
+    for (var i = 0; i < coords.length; i++) {
+        var pos = coords[i]
+        revealHackReveal(pos) // Reveal Cell
     }
 }
 
@@ -355,3 +363,32 @@ function revealHackReveal(coord) {
     else renderCell(coord, cellMinesCount)
 
 }
+
+
+// Add More Hacks (DEV-HACK)
+function addMoreHacks(ev) {
+
+    // Disables Context Menu Behavior
+    ev.preventDefault()
+
+    if (!gGame.isOn) return
+
+    // Right Click Event
+    if (ev.type === 'contextmenu') {
+
+        // Add more Hacks
+        gGame.lives = 5 // Restart Lives
+        gHacks.hints = 10 // Restart Hints
+        gHacks.megaHint.count = 5 // Restart megaHint
+        gHacks.removeMines = 3 // Restart RemoveMines
+        gHacks.stepBack.count = 10 // Restart stepBack
+
+        lifeCountUpdate(false)
+        hintCountUpdate(false)
+        megaHintCountUpdate(false)
+        removeMinesCountUpdate(false)
+        stepBackCountUpdate(false)
+    }
+
+}
+
