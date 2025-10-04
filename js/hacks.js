@@ -426,8 +426,6 @@ function addMoreHacks(ev) {
     // Disables Context Menu Behavior
     ev.preventDefault()
 
-    if (!gGame.isOn) return
-
     // Right Click Event
     if (ev.type === 'contextmenu') {
 

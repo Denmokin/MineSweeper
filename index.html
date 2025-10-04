@@ -91,19 +91,24 @@
             <div class="hack-container">
                 <h3>Hacks</h3>
                 <div class="options-btn-container">
-                    <div onclick="hintRandomEmptyCell()" alt="Small Hint" class="btn options">💡
+                    <div onclick="hintRandomEmptyCell()" alt="Random Hint" class="btn options">💡
                         <div class="hint-count">0</div>
+                         <span class="tooltiptext">Random<br>Hint</span>
                     </div>
                     <div onclick="megaHintStarter()" alt="Mega Hint" class="btn options">🧿
                         <div class="megaHint-count">0</div>
+                        <span class="tooltiptext">Mega<br>Hint</span>
                     </div>
                     <div onclick="removeMinesHack(gRemoveMineCount)" alt="Remove Mines" class="btn options">🧯
                         <div class="removeMines-count">0</div>
+                        <span class="tooltiptext">Remove<br>Mines</span>
                     </div>
-                    <div onclick="stepBackHack()" alt="Step Back Mines" class="btn options">🔙
+                    <div onclick="stepBackHack()" alt="Step Back" class="btn options">🔙
                         <div class="stepBack-count">0</div>
+                        <span class="tooltiptext">Step<br>Back</span>
                     </div>
                     <div onclick="manualMinePlacerStarter()" alt="Manual Mine Placer" class="btn options">💣
+                        <span class="tooltiptext">Manual Mine<br>Placer</span>
                     </div>
                 </div>
             </div>
@@ -114,7 +119,7 @@
 
 
         <!-- Credits -->
-        <h3 oncontextmenu="addMoreHacks(event)"> By Denis<span class="underline"> Mokin</span></h3>
+        <h3 class="creddits" oncontextmenu="addMoreHacks(event)"> By Denis<span class="underline"> Mokin</span></h3>
         <!-- Credits END -->
 
     </div>

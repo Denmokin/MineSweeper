@@ -36,6 +36,13 @@ body {
 
     /* animation */
     transition: all 0.8s;
+
+    /* font */
+    color: #303030 !important;
+    border-color: #303030 !important;
+
+
+
 }
 
 div {
@@ -235,7 +242,6 @@ table td:hover {
 }
 
 .btn:hover {
-    color: white;
     background-color: #49B6FF;
 }
 
@@ -379,6 +385,8 @@ table td:hover {
     width: 100%;
     /* font-size: 1.5rem !important; */
     padding: 5px;
+    position: relative;
+    border: 2px solid;
 }
 
 .options-btn-container {
@@ -427,8 +435,8 @@ table td:hover {
 
 .darkmode {
     border-color: white !important;
-    background-color: #303030;
-    color: white;
+    background-color: #303030 !important;
+    color: white !important;
 }
 
 .darkmode-switch {
@@ -506,7 +514,7 @@ table td:hover {
 
     /* other */
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
     border: 2px solid;
     padding: 5px 10px 5px 10px;
@@ -596,7 +604,7 @@ table td:hover {
     gap: 5px;
 
     /* border */
-    border: solid 2px black;
+    border: 2px solid;
 
     /* BG */
     background-color: white;
@@ -620,13 +628,11 @@ table td:hover {
     flex-direction: column;
 
     /* font */
-    color: white;
-    color: #303030;
     font-size: 1.2rem;
 
     /* other */
     text-align: center;
-    border: 2px solid black;
+    border: 2px solid;
     padding: 5px;
     background-color: white;
 }
@@ -643,13 +649,12 @@ table td:hover {
     flex-direction: column;
 
     /* font */
-    color: #303030;
     font-size: 1rem;
     font-weight: 500;
 
     /* other */
     text-align: center;
-    border: 2px solid black;
+    border: 2px solid;
     padding: 5px;
     background-color: white;
 }
@@ -661,5 +666,30 @@ table td:hover {
 
 input::placeholder {
     font-size: 1rem;
-    color: #303030;
+}
+
+/* tooltip --------------------------- */
+
+.tooltiptext {
+
+    
+    text-align: center;
+
+    font-size: 1rem;
+    visibility: hidden;
+    width: 130px;
+    border: 2px solid;
+    
+    padding: 5px 0;
+    position: absolute;
+    top: 65px;
+    z-index: 200;
+}
+
+.options:hover .tooltiptext {
+    visibility: visible;
+}
+
+.creddits {
+    margin-top: 50px;
 }
