@@ -325,14 +325,14 @@ function isEmpty(obj) {
 // Manual Mine Placer Starter
 function manualMinePlacerStarter() {
 
+    if (gGame.isOn) return
+
     // Change Face and Mark Icon To bom icon
     const elMarkIcon = document.querySelector('.mark-icon')
     const elRestart = document.querySelector('.restart')
 
     elRestart.innerText = MINEPLACER
     elMarkIcon.innerText = MINE
-
-    if (gGame.isOn) return
 
     // Change gManualMines to ON
     gManualMines.isOn = true
@@ -355,7 +355,7 @@ function manualMinePlacer(coord) {
 
     // If all Mines are placed Reset The board
     // (gameStarter Function Gets The coords)
-    
+
     if (coords.length === gLevel.MINES) {
         for (var i = 0; i < coords.length; i++) {
             var curCoord = coords[i]

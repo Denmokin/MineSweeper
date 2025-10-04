@@ -37,7 +37,6 @@ const gManualMines = {
     isOn: false,
     mineCount: 0,
     customMinesCoords: [],
-
 }
 
 // Global Arrays.
