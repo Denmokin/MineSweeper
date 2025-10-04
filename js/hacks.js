@@ -8,6 +8,9 @@ var gRemoveMineCount = 3
 // Global Arrays
 var gStepCellsRecorder = {}
 
+//Global Interval 
+var gScoreTimerInterval
+
 
 function addHintCss(coord) {
     const elCell = getElementFromCoord(coord)

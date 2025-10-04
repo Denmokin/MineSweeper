@@ -50,6 +50,7 @@ const gDifficulty = [
     { DIFF: 'Hard', SIZE: 12, MINES: 32, },
 ]
 
+
 // Global Icons.
 const MARKED = '🚩'
 const MINE = '💣'
@@ -405,6 +406,8 @@ function restartGame() {
 
     gManualMines.isOn = false // Restart Manual Mine Placer
     gManualMines.customMinesCoords = []
+
+    clearInterval(gScoreTimerInterval) // Stop Score Timer Interval
 
     // Restart Cells Recorder
     gStepCellsRecorder = {}
