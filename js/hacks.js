@@ -241,9 +241,7 @@ function removeMinesRevealUpdate() {
     }
 }
 
-
 function removeMinesGlobalRestart() {
-
     var num = null
 
     if (gLevel.DIFF === 'Easy') num = 0
@@ -291,10 +289,10 @@ function stepBackHack() {
             gGame.lives++
             lifeCountUpdate(false)
 
-             //Mark Back
+            //Mark Back
             gGame.markedCount++
             markCountUpdate(0)
-            
+
             // CSS Remove
             elCell.classList.remove('boom')
         }
@@ -320,6 +318,63 @@ function stepBackCountUpdate(isUsed) {
 function isEmpty(obj) {
     return Object.keys(obj).length === 0
 }
+
+
+///////////////----------- Manual Mine Placer ----------/////////////////
+
+// Manual Mine Placer Starter
+function manualMinePlacerStarter() {
+
+    // Change Face and Mark Icon To bom icon
+    const elMarkIcon = document.querySelector('.mark-icon')
+    const elRestart = document.querySelector('.restart')
+
+    elRestart.innerText = MINEPLACER
+    elMarkIcon.innerText = MINE
+
+    if (gGame.isOn) return
+
+    // Change gManualMines to ON
+    gManualMines.isOn = true
+    console.log('gManualMines.isOn: ', gManualMines.isOn)
+}
+
+// Manual Mine Placer
+function manualMinePlacer(coord) {
+
+    const coords = gManualMines.customMinesCoords
+
+    // Adds Reveal CSS
+    renderCell(coord, MINE)
+
+    // Pushes Clicked Cell
+    coords.push(coord)
+
+    // Updated ManualMineCount
+    markCountUpdate(true)
+
+    // If all Mines are placed Reset The board
+    // (gameStarter Function Gets The coords)
+    
+    if (coords.length === gLevel.MINES) {
+        for (var i = 0; i < coords.length; i++) {
+            var curCoord = coords[i]
+            renderCell(curCoord, '')
+        }
+
+        gManualMines.isOn = false
+
+        const elMarkIcon = document.querySelector('.mark-icon')
+        const elRestart = document.querySelector('.restart')
+
+        elRestart.innerText = SMILE
+        elMarkIcon.innerText = MARKED
+
+        gGame.markedCount = gLevel.MINES
+        markCountUpdate(0)
+    }
+}
+
 
 ///////////////-----------DEV HACKS----------/////////////////
 
@@ -391,4 +446,5 @@ function addMoreHacks(ev) {
     }
 
 }
+
 

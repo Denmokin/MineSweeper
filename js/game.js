@@ -33,6 +33,13 @@ const gHacks = {
     },
 }
 
+const gManualMines = {
+    isOn: false,
+    mineCount: 0,
+    customMinesCoords: [],
+
+}
+
 // Global Arrays.
 var gBoard = []
 var gAllCellCoords = []
@@ -53,6 +60,7 @@ const LOSE = '😵'
 const WIN = '😎'
 const SHOCK = '😮'
 const OUTCH = '😖'
+const MINEPLACER = '🤓'
 const LIFE = '❤️'
 const HIT = '💔'
 
@@ -101,6 +109,9 @@ function onInit() {
             gRemoveMineCount = 1
         }
 
+        //Manual Mines 
+        gManualMines.mineCount = gLevel.MINES
+
         markCountUpdate(0)
         lifeCountUpdate(false)
         hintCountUpdate(false)
@@ -117,8 +128,13 @@ function gameStarter(coord) {
 
     gGame.isOn = true // starts the game
 
+    // Manual Mine Placer
+    if (gManualMines.customMinesCoords.length > 0) {
+        gMineCoords = gManualMines.customMinesCoords
+    }
+
     // Get Mine Locations
-    gMineCoords = randomMine(gLevel.MINES, coord)
+    else gMineCoords = randomMine(gLevel.MINES, coord)
 
     // Add random mines ( by running on the gMineCoords ).
     for (var i = 0; i < gMineCoords.length; i++) {
@@ -182,6 +198,9 @@ function revealCell(coord, element) {
     //If its Revealed do nothing
     if (gBoard[coord.i][coord.j].isRevealed) return
 
+    // Mega Hint Start
+    if (gManualMines.isOn) return manualMinePlacer(coord)
+
     // Toggle (start) Stopwatch (Only on when revealedCount is 0)
     if (gGame.revealedCount === 0) {
         gameStarter(coord) // Starts the game on first click (gets coords)
@@ -231,7 +250,6 @@ function revealCellsAround(coord) {
         // Step Back Recorder Print
         console.log('gStepCellsRecorder: ', gStepCellsRecorder)
         gHacks.stepBack.recCount++  // Step Back Record (count)
-
         return
     }
 
@@ -364,6 +382,9 @@ function restartGame() {
     const elTimer = document.querySelector('.timer')// Reset timer
     elTimer.innerText = '00:00'
 
+    const elMarkIcon = document.querySelector('.mark-icon')
+    elMarkIcon.innerText = MARKED
+
     lifeIconChange(false) // Life icon Change
 
     gGame.revealedCount = 0 // Reveal Count
@@ -381,6 +402,9 @@ function restartGame() {
 
     gHacks.stepBack.count = 5 // Restart stepBack
     gHacks.stepBack.recCount = 0 // Restart stepBack
+
+    gManualMines.isOn = false // Restart Manual Mine Placer
+    gManualMines.customMinesCoords = []
 
     // Restart Cells Recorder
     gStepCellsRecorder = {}
