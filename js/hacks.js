@@ -1,6 +1,12 @@
 'use strict'
 
+
+// Global STUFF:
+var gRightClickCounter
 var gRemoveMineCount = 3
+
+// Global Arrays
+var gStepCellsRecorder = {}
 
 
 function addHintCss(coord) {
@@ -36,7 +42,7 @@ function hintRandomEmptyCell() {
     }
 
     // Removes USED coord from Array
-    gEmptyCells.splice[randNum, 1]
+    gEmptyCells.splice(randNum, 1)
 
     addHintCss(randCoord)
 
@@ -173,32 +179,36 @@ function megaHintRevealCellsAround(coords, reverse) {
 
 function removeMinesHack(count) {
 
-
-    if (!gGame.isOn || gHacks.removeMines === 0) return
+    if (!gGame.isOn || gHacks.removeMines === 0 ||
+        (gLevel.DIFF === 'Easy' && gGame.lives < 2)) return
 
     removeMinesCountUpdate(true)
 
-    const mineCoordsCopy = gMineCoords.slice()
+    // Update Easy mode
+    if (gLevel.DIFF === 'Easy') lifeCountUpdate(true)
 
-    var n = mineCoordsCopy.length
+    for (var i = 0; i < count; i++) {
 
-    console.log('gMineCoords: ', gMineCoords)
-    for (var i = 0; i <= count; i++) {
-
-        var randNum = randIntInclusive(0, n - 1)
-        var randMine = mineCoordsCopy[randNum]
+        var randNum = randIntInclusive(0, gMineCoords.length - 1)
+        var randMine = gMineCoords[randNum]
 
         while (gBoard[randMine.i][randMine.j].isRevealed === true) {
-            randNum = randIntInclusive(0, n - 1)
-            randMine = mineCoordsCopy[randNum]
+            randNum = randIntInclusive(0, gMineCoords.length - 1)
+            randMine = gMineCoords[randNum]
         }
 
         // Removes USED coord from Array
-        mineCoordsCopy.splice[randNum, 1]
-
+        gMineCoords.splice(randNum, 1)
         gBoard[randMine.i][randMine.j].isMine = false
-
     }
+
+    // Update Mark Count
+    gGame.markedCount -= gRemoveMineCount
+    markCountUpdate(0)
+
+    // Update Update Mine Count and Empty Cell Count
+    gLevel.MINES -= gRemoveMineCount
+    gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
 
     setMinesNbrCount() // Count Mines Again
     removeMinesRevealUpdate() // Reveal Update
@@ -227,6 +237,66 @@ function removeMinesRevealUpdate() {
             else renderCell(coord, cellMinesCount)
         }
     }
+}
+
+
+function removeMinesGlobalRestart() {
+
+    var num = null
+
+    if (gLevel.DIFF === 'Easy') num = 0
+    else if (gLevel.DIFF === 'Medium') num = 1
+    else if (gLevel.DIFF === 'Hard') num = 2
+    gLevel.MINES = gDifficulty[num].MINES
+}
+
+
+
+//////////////-------- Step Back Hack --------///////////////
+
+
+function stepRecorder(coord) {
+    var stepBackCount = gHacks.stepBack.stepRecCount
+    gStepCellsRecorder[stepBackCount].push(coord)
+    console.log('stepBackCount: ', stepBackCount)
+}
+
+
+function stepBackHack() {
+
+    if (!gGame.isOn || gHacks.stepBack.count === 0) return
+
+    stepBackCountUpdate(true)
+
+    const stepBack = gStepCellsRecorder[gHacks.stepBack.stepRecCount - 1]
+
+    for (var i = 0; i < stepBack.length; i++) {
+        var coord = stepBack[i]
+
+        const elCell = getElementFromCoord(coord)
+        elCell.removeAttribute('id')
+
+        if (gBoard[coord.i][coord.j].isMine && gBoard[coord.i][coord.j].isMarked) {
+            gGame.lives++
+            lifeCountUpdate(false)
+            gBoard[coord.i][coord.j].isRevealed = false
+            renderCell(coord, '')
+            elCell.classList.remove('boom')
+        }
+
+        gBoard[coord.i][coord.j].isRevealed = false
+        renderCell(coord, '')
+    }
+
+    gStepCellsRecorder[gHacks.stepBack.stepRecCount] = []
+    gHacks.stepBack.stepRecCount--
+}
+
+// Remove Mines Count Updater
+function stepBackCountUpdate(isUsed) {
+    if (isUsed) gHacks.stepBack.count--
+    const elHints = document.querySelector('.stepBack-count')
+    elHints.innerText = gHacks.stepBack.count
 }
 
 

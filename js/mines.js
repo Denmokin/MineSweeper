@@ -39,7 +39,7 @@ function getAllBoardCellCords(board) {
 // Random Mine Places
 function randomMine(mineCount, coord) {
     const randMineCords = []
-    var cellCoords = gAllCellCoords.slice() // Copy of global 
+    var cellCoords = gAllCellCoords.slice() // Copy of Global Coords 
 
     console.log('cellCoords: ', cellCoords)
 

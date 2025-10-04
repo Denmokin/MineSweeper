@@ -26,7 +26,12 @@ const gHacks = {
         count: 2,
         coords: [],
     },
+    stepBack: {
+        stepRecCount: 0,
+        count: 5,
+    },
 }
+
 
 // Global Arrays.
 var gBoard = []
@@ -51,8 +56,6 @@ const OUTCH = '😖'
 const LIFE = '❤️'
 const HIT = '💔'
 
-// Global STUFF:
-var gRightClickCounter
 
 
 function onInit() {
@@ -83,7 +86,7 @@ function onInit() {
 
     function gamePropertiesSet() {
 
-
+        // Game Properties Set.
         gGame.isOn = false
         gGame.markedCount = gLevel.MINES
         gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
@@ -94,11 +97,17 @@ function onInit() {
             gGame.lives = gLevel.MINES
         }
 
+        // Remove Only One Mine (Mine Remover Hack)
+        if (gLevel.DIFF === 'Easy') {
+            gRemoveMineCount = 1
+        }
+
         markCountUpdate(0)
         lifeCountUpdate(false)
         hintCountUpdate(false)
         megaHintCountUpdate(false)
         removeMinesCountUpdate(false)
+        stepBackCountUpdate(false)
 
         // 2 Right Clicks on Start Button (Wins The Game)
         gRightClickCounter = 0
@@ -189,10 +198,21 @@ function revealCell(coord, element) {
     ) {
         // Checks if the Cell is Mine
         if (gBoard[coord.i][coord.j].isMine === true) {
+
+            // Adds stepRecCount Array for StepBack hack
+            var stepBackCount = gHacks.stepBack.stepRecCount
+            gStepCellsRecorder[stepBackCount] = []
+
             return isMineClicked(coord, element)
         }
+
         // Else Proceeds to Reveal it
         else {
+
+            // Adds stepRecCount Array for StepBack hack
+            var stepBackCount = gHacks.stepBack.stepRecCount
+            gStepCellsRecorder[stepBackCount] = []
+
             revealCellsAround(coord) // (DOM)
             isVictory() // Every reveal (checks if all the Mine are marked and revealed)
 
@@ -214,11 +234,12 @@ function revealCellsAround(coord) {
     // if number reveal only number
     if (cellMinesCount > 0) return
 
+
     // Creates an array with neighbor Coords
     const nbrOpenPoses = countNeighborsArray(gBoard, coord.i, coord.j)
     for (var i = 0; i < nbrOpenPoses.length; i++) {
         var emptyPos = nbrOpenPoses[i]
-        renderRevealCell(emptyPos) // Reveal Cell
+        renderRevealCell(emptyPos)
     }
 }
 
@@ -234,6 +255,7 @@ function renderRevealCell(coord) {
         gGame.revealedCount++ // Counts Revealed Cells
         const elCell = getElementFromCoord(coord)
         elCell.id = 'revealed'
+
     }
 
     // If Revealed Removes Mark
@@ -245,6 +267,7 @@ function renderRevealCell(coord) {
     if (cellMinesCount !== 0) {// Skips 0 (Skips adding Mine count)
         renderCell(coord, cellMinesCount)
     }
+
 }
 
 
@@ -339,13 +362,21 @@ function restartGame() {
     gGame.revealedCount = 0 // Reveal Count
     gGame.lives = 3 // Restart Lives
     gGame.secsPassed = 0 // Restart Lives
-    lifeCountUpdate(false)
 
     // Reset Hacks 
     gHacks.hints = 3 // Restart Hints
+
     gHacks.megaHint.count = 2 // Restart megaHint
     gHacks.megaHint.isOn = false
-    gHacks.removeMines = 1
+
+    gHacks.removeMines = 1 // Restart RemoveMines
+    removeMinesGlobalRestart()
+
+    gHacks.stepBack.count = 5 // Restart stepBack
+    gHacks.stepBack.stepRecCount = 0 // Restart stepBack
+
+    // Restart Cells Recorder
+    gStepCellsRecorder = {}
 
     // Restart Matrix
     onInit()
