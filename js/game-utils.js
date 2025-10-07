@@ -101,3 +101,30 @@ function gameInfoBehaviorCSS() {
 function disableContextMenu(ev) {
     ev.preventDefault()
 }
+
+
+// Neighbor Recursive Reveal
+function nbrRecursiveReveal(coord) {
+
+    var zeroMines = []
+
+    for (var i = coord.i - 1; i <= coord.i + 1; i++) {
+        for (var j = coord.j - 1; j <= coord.j + 1; j++) {
+            var curCoord = { i: i, j: j }
+            if (i === coord.i && j === coord.j) continue
+            if (!inBounds(gBoard, curCoord)) continue
+
+            var mineCount = gBoard[curCoord.i][curCoord.j].minesAroundCount
+
+            if (isMine(curCoord) && mineCount === 0 &&
+                !gBoard[curCoord.i][curCoord.j].isRevealed) {
+                zeroMines.push(curCoord)
+            }
+
+            if (isMine(curCoord)) renderRevealCell(curCoord)
+        }
+    }
+    for (var i = 0; i < zeroMines.length; i++) {
+        nbrRecursiveReveal(zeroMines[i])
+    }
+}

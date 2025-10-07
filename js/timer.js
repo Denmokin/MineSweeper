@@ -16,7 +16,7 @@ function toggleStopwatch(selector) {
       var elapsed = Date.now() - stopwatchStart
       var min = String(Math.floor(elapsed / 60000)).padStart(2, '0')
       var sec = String(Math.floor((elapsed % 60000) / 1000)).padStart(2, '0')
-      var ms = String(Math.floor((elapsed % 1000) / 10)).padStart(2, '0') // Did't used
+      var ms = String(Math.floor((elapsed % 1000) / 10)).padStart(2, '0') // Didn't used
       var el = document.querySelector(sel)
       if (el) el.innerText = `${min}:${sec}`
     }, 10)
@@ -24,4 +24,11 @@ function toggleStopwatch(selector) {
     clearInterval(stopwatchTimerId)
   }
   stopwatchRunning = !stopwatchRunning
+}
+
+
+function timerScore(seconds) {
+  var min = Math.floor(seconds / 60) + ''
+  var sec = seconds % 60 + ''
+  return min.padStart(2, '0') + ':' + sec.padStart(2, '0')
 }

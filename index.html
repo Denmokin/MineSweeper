@@ -13,42 +13,107 @@
         rel="stylesheet">
     <!-- Google fonts END -->
 
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- CSS END -->
+
 </head>
 
 <body onload="onInit()">
-    <div class="darkmode-switch" onclick="switchDarkMode(this)"></div>
+
     <div oncontextmenu="disableContextMenu(event)" class="game-wrapper">
-        <h1>Mine<span class="underline"> Sweeper</span></h1>
+        <div class="score-board-wrapper">
+            <div class="score-board-container">
+                <h3>Score Board</h3>
+                <div class="scores-container"></div>
+            </div>
+        </div>
+
+        <div class="header-wrapper">
+            <h1>Mine <span class="underline">Sweeper</span></h1>
+            <div class="darkmode-switch" onclick="switchDarkMode(this)"></div>
+        </div>
+
         <div class="gameinfo-wrapper">
+
             <div class="gameinfo">
+                <div class="life">
+                    <div class="life-icon">❤️</div>
+                    <div class="life-count">0</div>
+                </div>
                 <div class="mark">
-                    <div>🚩</div>
+                    <div class="mark-icon">🚩</div>
                     <div class="mark-count">0</div>
                 </div>
-                <div class="btn" onclick="restartGame()">😀</div>
+                <div class="btn restart" oncontextmenu="winGameHack(event)" onclick="restartGame()">😀</div>
             </div>
             <div class="timer">00:00</div>
         </div>
 
-        <div class="table-wrapper"></div>
+        <div class="game-board-wrapper">
+            <div class="modal">
+                <div class="modal-content">
+                    <form class="score-form" onsubmit="getScoreName(event)">
+                        <h3>🏆</h3>
+                        <input type="text" class="modal-score-name" name="name" placeholder="Name?">
+                        <button type="submit" class="btn modal-btn">Submit ✉️</button>
+                    </form>
 
-        <div class="diff-wrapper">
-            <h2>Choose Difficulty</h2>
-            <div class="diff-container">
-                <div class="btn diff selected" onclick="difficultyChange(0,this)">🤗</div>
-                <div class="btn diff" onclick="difficultyChange(1,this)">🥵</div>
-                <div class="btn diff" onclick="difficultyChange(2,this)">😈</div>
+                </div>
             </div>
+            <div class="table-wrapper"></div>
         </div>
 
-        <h3> By Denis<span class="underline"> Mokin</span></h3>
+        <div class="game-options-wrapper">
+
+            <div class="diff-container">
+                <h3>Choose Difficulty</h3>
+                <div class="options-btn-container">
+                    <div class="btn options" onclick="difficultyChange(0,this)">🤗</div>
+                    <div class="btn options selected" onclick="difficultyChange(1,this)">🥵</div>
+                    <div class="btn options" onclick="difficultyChange(2,this)">😈</div>
+                </div>
+            </div>
+
+            <div class="hack-container">
+                <h3>Hacks</h3>
+                <div class="options-btn-container">
+                    <div onclick="hintRandomEmptyCell()" alt="Random Hint" class="btn options">💡
+                        <div class="hint-count">0</div>
+                         <span class="tooltiptext">Random<br>Hint</span>
+                    </div>
+                    <div onclick="megaHintStarter()" alt="Mega Hint" class="btn options">🧿
+                        <div class="megaHint-count">0</div>
+                        <span class="tooltiptext">Mega<br>Hint</span>
+                    </div>
+                    <div onclick="removeMinesHack(gRemoveMineCount)" alt="Remove Mines" class="btn options">🧯
+                        <div class="removeMines-count">0</div>
+                        <span class="tooltiptext">Remove<br>Mines</span>
+                    </div>
+                    <div onclick="stepBackHack()" alt="Step Back" class="btn options">🔙
+                        <div class="stepBack-count">0</div>
+                        <span class="tooltiptext">Step<br>Back</span>
+                    </div>
+                    <div onclick="manualMinePlacerStarter()" alt="Manual Mine Placer" class="btn options">💣
+                        <span class="tooltiptext">Manual Mine<br>Placer</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <h3 class="creddits" oncontextmenu="addMoreHacks(event)"> By Denis<span class="underline"> Mokin</span></h3>
+
     </div>
 
     <script src="js/game.js"></script>
     <script src="js/mines.js"></script>
+    <script src="js/hacks.js"></script>
     <script src="js/timer.js"></script>
-    <script src="js/util.js"></script>
+    <script src="js/score-board.js"></script>
+    <script src="js/game-utils.js"></script>
+    <script src="js/global-utils.js"></script>
 
 </body>
 
