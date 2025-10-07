@@ -1,55 +1,30 @@
 'use strict'
 
 
+// Global Arrays.
+var gBoard = []
+var gBoardCellCoords = []
+var gMineCoords = []
+
+const gDifficulty = [
+    { boardSize: 4, minesCount: 2, },
+    { boardSize: 8, minesCount: 12, },
+    { boardSize: 12, minesCount: 32, },
+]
+
 // Global Level Setting.
 const gLevel = {
-    SIZE: 8,
-    MINES: 12,
-    DIFF: 'Medium',
+    SIZE: 4,
+    MINES: 2,
 }
 
 // Global Game Properties.
 const gGame = {
     isOn: false,
-    lives: 3,
     revealedCount: 0,
-    emptyCells: 0,
     markedCount: 0,
-    secsPassed: 0,
+    secsPassed: 0
 }
-
-// Global Hack Properties.
-const gHacks = {
-    hints: 3,
-    removeMines: 1,
-    megaHint: {
-        isOn: false,
-        count: 1,
-        coords: [],
-    },
-    stepBack: {
-        recCount: 0,
-        count: 5,
-    },
-}
-
-const gManualMines = {
-    isOn: false,
-    mineCount: 0,
-    customMinesCoords: [],
-}
-
-// Global Arrays.
-var gBoard = []
-var gAllCellCoords = []
-var gMineCoords = []
-
-const gDifficulty = [
-    { DIFF: 'Easy', SIZE: 4, MINES: 2, },
-    { DIFF: 'Medium', SIZE: 8, MINES: 12, },
-    { DIFF: 'Hard', SIZE: 12, MINES: 32, },
-]
-
 
 // Global Icons.
 const MARKED = '🚩'
@@ -59,132 +34,111 @@ const SMILE = '😀'
 const LOSE = '😵'
 const WIN = '😎'
 const SHOCK = '😮'
-const OUTCH = '😖'
-const MINEPLACER = '🤓'
-const LIFE = '❤️'
-const HIT = '💔'
-
 
 function onInit() {
 
     // Game Properties Set.
-    gamePropertiesSet()
+    gGame.markedCount = gLevel.MINES
+    gGame.isOn = true
+    markCountUpdate(0)
 
     //Matrix Creation.
     gBoard = createSquareMatrix(gLevel.SIZE)
 
     //All possible locations finder (to prevent doubles).
-    gAllCellCoords = getAllBoardCellCords(gBoard)
+    gBoardCellCoords = getAllBoardCellCords(gBoard)
 
-
-    console.log('gAllCellCoords: ', gAllCellCoords)
-    console.log('gBoard: ', gBoard)
+    //Mine Generator.
+    gMineCoords = randomMine(gLevel.MINES)
 
     // Game Board Creation.
-    buildBoard() // builds a board
+    buildBoard() // builds a board and sets some mines.
+    setMinesNbrCount() // Neighbor mines counter.
     renderBoard('.table-wrapper') // Rendering the board.
     gameInfoBehaviorCSS() // Change some CSS properties.
 
-    // Render Score Board
-    renderScores()
+    console.table(gBoard)
+}
 
-    // console.table(gBoard) // Test
+// Game over Function
+function gameOver(isWin) {
 
+    //Global Game Over Behaviors
+    const elBtn = document.querySelector('.btn')
+    gGame.isOn = false // Stops Game (Stops clicking behavior).
+    toggleStopwatch() // Toggle (stop) Stopwatch
 
-    function gamePropertiesSet() {
+    // Lose Behavior
+    if (isWin) {
+        minesReveal() // Reveals all the mines.
+        elBtn.innerText = LOSE
+    }
 
-        // Game Properties Set.
-        gGame.isOn = false
-        gGame.markedCount = gLevel.MINES
-        gGame.emptyCells = (gLevel.SIZE ** 2) - gLevel.MINES
-
-        //If less than 3 mines, Make Changes
-        if (gLevel.MINES < 3) {
-            gHacks.hints = 1
-            gGame.lives = gLevel.MINES
-        }
-
-        // Remove Only One Mine (Mine Remover Hack)
-        if (gLevel.DIFF === 'Easy') {
-            gRemoveMineCount = 1
-        }
-
-        //Manual Mines 
-        gManualMines.mineCount = gLevel.MINES
-
-        markCountUpdate(0)
-        lifeCountUpdate(false)
-        hintCountUpdate(false)
-        megaHintCountUpdate(false)
-        removeMinesCountUpdate(false)
-        stepBackCountUpdate(false)
-
-        // 2 Right Clicks on Start Button (Wins The Game)
-        gRightClickCounter = 0
+    // Victory Behavior.
+    else {
+        elBtn.innerText = WIN
     }
 }
 
-function gameStarter(coord) {
+// Build a board.
+function buildBoard() {
 
-    gGame.isOn = true // starts the game
-
-    // Manual Mine Placer
-    if (gManualMines.customMinesCoords.length > 0) {
-        gMineCoords = gManualMines.customMinesCoords
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[i].length; j++) {
+            // Adds custom object cell.
+            gBoard[i][j] = customCellObject()
+        }
     }
-
-    // Get Mine Locations
-    else gMineCoords = randomMine(gLevel.MINES, coord)
 
     // Add random mines ( by running on the gMineCoords ).
     for (var i = 0; i < gMineCoords.length; i++) {
         var mineCoord = gMineCoords[i]
         gBoard[mineCoord.i][mineCoord.j].isMine = true
     }
-    setMinesNbrCount() // Neighbor mines counter.
-
-    // Get Timer For Score
-    gScoreTimerInterval = setInterval(() => { gGame.secsPassed++ }, 1000)
-
-    console.table(gBoard)  // Filled Game Board Test
 }
 
-
+// Custom cell Object.
+function customCellObject() {
+    const cell = {
+        minesAroundCount: 0,
+        isRevealed: false,
+        isMine: false,
+        isMarked: false,
+    }
+    return cell
+}
 
 // Cell Click Behavior.
-function onCellClick(element, event) {
+function cellClicked(element, event) {
 
     // Disables Context Menu Behavior
     event.preventDefault()
 
-    // Game is on?
-    if (!gGame.isOn && gGame.revealedCount > 0) return
+    if (gGame.isOn) { // Game is on?
+        var coord = coordFromClass(element.className) // Get Cell Cords
 
-    var coord = coordFromClass(element.className) // Get Cell Cords
-
-    switch (event.type) { // Switch click behavior
-        case 'contextmenu': isMarked(coord); break // Right Click
-        case 'click': revealCell(coord, element); break // Left Click
-        default: return null
+        // Switch click behavior
+        switch (event.type) {
+            case 'contextmenu': isMarked(coord); break // Right Click
+            case 'click': revealCell(coord, element); break // Left Click
+            default: return null
+        }
     }
+    else return
 }
 
 // RightCLick Function (MARK or UNMARK)
 function isMarked(coord) {
 
-    //If its Revealed do nothing
-    if (gBoard[coord.i][coord.j].isRevealed) return
+    // Checks if the Cell is Revealed or Marked and then Proceeds
+    if (gBoard[coord.i][coord.j].isMarked === false &&
+        gBoard[coord.i][coord.j].isRevealed === false) {
 
-    // Checks if the Cell is Revealed or Marked and then Proceeds.
-    if (!gBoard[coord.i][coord.j].isMarked &&
-        !gBoard[coord.i][coord.j].isRevealed
-    ) {
         gBoard[coord.i][coord.j].isMarked = true // Change ot Marked (Model)
+        isVictory() // Every Mark (checks if all the Mine are marked)
         renderCell(coord, MARKED) // Render Mark (DOM)
         markCountUpdate(true) // Mark count update (DOM),(Modal)
-        isVictory() // Every Mark (checks if all the Mine are marked and revealed)
     }
-
     else if (gBoard[coord.i][coord.j].isRevealed === false) {
         gBoard[coord.i][coord.j].isMarked = false
         renderCell(coord, UNMARKED)
@@ -195,43 +149,27 @@ function isMarked(coord) {
 // Left Click Function (REVEAL CELL and the Neighbors Around)
 function revealCell(coord, element) {
 
-    //If its Revealed do nothing
-    if (gBoard[coord.i][coord.j].isRevealed) return
-
-    // Mega Hint Start
-    if (gManualMines.isOn) return manualMinePlacer(coord)
-
     // Toggle (start) Stopwatch (Only on when revealedCount is 0)
-    if (gGame.revealedCount === 0) {
-        gameStarter(coord) // Starts the game on first click (gets coords)
-        toggleStopwatch()
-    }
-
-    // Mega Hint Start
-    if (gHacks.megaHint.isOn) return megaHintCoordsPusher(coord)
+    if (gGame.revealedCount === 0) toggleStopwatch()
 
     // Checks if the Cell is Revealed or Marked and then Proceeds
-    if (!gBoard[coord.i][coord.j].isRevealed &&
-        !gBoard[coord.i][coord.j].isMarked
+    if (gBoard[coord.i][coord.j].isRevealed === false &&
+        gBoard[coord.i][coord.j].isMarked === false
     ) {
-
-        // Adds stepRecCount Array for StepBack hack
-        var stepBackCell = gHacks.stepBack.recCount
-        gStepCellsRecorder[stepBackCell] = []
-
         // Checks if the Cell is Mine
         if (gBoard[coord.i][coord.j].isMine === true) {
-            return isMineClicked(coord, element)
+            renderCell(coord, MINE) // (DOM)
+            element.classList.add('boom') // Adds BG
+            gameOver(true)
+            return
         }
-
         // Else Proceeds to Reveal it
         else {
+            gBoard[coord.i][coord.j].isRevealed = true // (Model)
             revealCellsAround(coord) // (DOM)
-            isVictory() // Every reveal (checks if all the Mine are marked and revealed)
+            element.classList.add('revealed') // Adds BG
+            faceChange() // Face Change (Like in the ORIGINAL)
 
-            if (gGame.isOn) { // If game over don't change Face
-                faceChange(false) // Face Change (Like in the ORIGINAL)
-            }
         }
     }
 }
@@ -239,178 +177,92 @@ function revealCell(coord, element) {
 // Reveal all The Neighbor cells that don't contain a Mine
 function revealCellsAround(coord) {
 
-    renderRevealCell(coord) // reveals the first clicked cell
-
-    // Cell Mines Count
-    const cellMinesCount = gBoard[coord.i][coord.j].minesAroundCount
-
-    // if number reveal only number
-    if (cellMinesCount > 0) {
-
-        // Step Back Recorder Print
-        console.log('gStepCellsRecorder: ', gStepCellsRecorder)
-        gHacks.stepBack.recCount++  // Step Back Record (count)
-        return
-    }
-
     // Creates an array with neighbor Coords
     const nbrOpenPoses = countNeighborsArray(gBoard, coord.i, coord.j)
     for (var i = 0; i < nbrOpenPoses.length; i++) {
         var emptyPos = nbrOpenPoses[i]
-        renderRevealCell(emptyPos)
+        renderRevealCell(emptyPos) // Reveal Cell
     }
-
-    // Step Back Recorder Print
-    console.log('gStepCellsRecorder: ', gStepCellsRecorder)
-    gHacks.stepBack.recCount++ // Step Back Record (count)
 }
 
 // Function That reveals one cell at the time
 function renderRevealCell(coord) {
 
-    // Step Back Record
-    stepBackHackRecorder(coord)
+    gGame.revealedCount++ // Counts Revealed Cells
 
-    // Mines Count
-    const cellMinesCount = gBoard[coord.i][coord.j].minesAroundCount
+    const cellClass = classFromCoord(coord) // Get coords Class
+    const elCell = document.querySelector(`.${cellClass}`) // Element from (DOM)
+    const minesCount = gBoard[coord.i][coord.j].minesAroundCount // Mines Count
 
-    // Reveals the cell
-    if (gBoard[coord.i][coord.j].isRevealed === false) {
-        gBoard[coord.i][coord.j].isRevealed = true // Reveal Cell (Model)
-        gGame.revealedCount++ // Counts Revealed Cells
-        const elCell = getElementFromCoord(coord)
-        elCell.id = 'revealed'
+    elCell.classList.add('revealed')
+    gBoard[coord.i][coord.j].isRevealed = true
 
+    if (minesCount !== 0) {// Skips 0 (Skips adding Mine count)
+        renderCell(coord, minesCount)
     }
-
-    // If Revealed Removes Mark
-    if (gBoard[coord.i][coord.j].isMarked) {
-        gBoard[coord.i][coord.j].isMarked = false
-        markCountUpdate(false) // Updates mark count
-    }
-
-    if (cellMinesCount !== 0) {// Skips 0 (Skips adding Mine count)
-        renderCell(coord, cellMinesCount)
-    }
-
 }
 
-
-// Is Victory Function 
+// Is Victory Function (checks mine locations (gMineCoords) every mark)
 function isVictory() {
 
     // if not revealed don't check victory
     if (gGame.revealedCount === 0) return
 
-    var markCount = 0
-
-    // Checks mine locations if marked
+    var count = 0
     for (var i = 0; i < gMineCoords.length; i++) {
         var mineCoord = gMineCoords[i]
         if (gBoard[mineCoord.i][mineCoord.j].isMarked === true) {
-            markCount++
+            count++
         }
     }
-
-    if (markCount === gLevel.MINES && // if all mines are Marked
-        gGame.revealedCount === gGame.emptyCells)  // if all cells are Revealed
-    {
-        return gameOver(false) // You Win!
-    }
-
+    if (count === gMineCoords.length) return gameOver(false)
     else return
 }
 
-// Game over Function
-function gameOver(isLose) {
+// Face Change Function
+function faceChange() {
+    const elBtn = document.querySelector('.btn')
+    elBtn.innerText = SHOCK
+    setTimeout(() => { elBtn.innerText = SMILE }, 200)
+}
 
-    //Global Game Over Behaviors
-    const elBtn = document.querySelector('.restart')
-    gGame.isOn = false // Stops Game (Stops clicking behavior).
-    toggleStopwatch() // Toggle (stop) Stopwatch
-    clearInterval(gScoreTimerInterval) // Stop Score Timer Interval
-
-    // Lose Behavior
-    if (isLose) {
-        minesReveal() // Reveals all the mines.
-        lifeIconChange(true)
-        return elBtn.innerText = LOSE
+// Mark Count Updater Function
+function markCountUpdate(marked) {
+    if (marked !== 0) {
+        marked ? gGame.markedCount-- : gGame.markedCount++
     }
-
-    // Victory Behavior.
-    else {
-        // Opens Score Form
-        toggleModal()
-        return elBtn.innerText = WIN
-    }
+    const elFlags = document.querySelector('.mark-count')
+    elFlags.innerText = gGame.markedCount
 }
 
 // Switch Difficulty
 function difficultyChange(num, el) {
 
     // Find all .selected buttons and remove
-    removeSelectedCssFromCell()
+    const elAllDiff = document.querySelectorAll('.diff')
+    for (var i = 0; i < elAllDiff.length; i++) {
+        elAllDiff[i].classList.remove('selected')
+    }
 
     // Add Selected button
     el.classList.add('selected')
 
     // Change Difficulty
-    gLevel.SIZE = gDifficulty[num].SIZE
-    gLevel.MINES = gDifficulty[num].MINES
-
-    // Change Diff Name for Score
-    gLevel.DIFF = gDifficulty[num].DIFF
+    gLevel.SIZE = gDifficulty[num].boardSize
+    gLevel.MINES = gDifficulty[num].minesCount
 
     // Restart Game
     restartGame()
-
-    function removeSelectedCssFromCell() {
-        const elAllDiff = document.querySelectorAll('.options')
-        for (var i = 0; i < elAllDiff.length; i++) {
-            elAllDiff[i].classList.remove('selected')
-        }
-    }
 }
 
 // Restart Game Difficulty
 function restartGame() {
 
     // Restart DOM
-    const elBtn = document.querySelector('.restart') // Reset Restart Button
+    const elBtn = document.querySelector('.btn')
+    const elTimer = document.querySelector('.timer')
     elBtn.innerText = SMILE
-
-    const elTimer = document.querySelector('.timer')// Reset timer
     elTimer.innerText = '00:00'
-
-    const elMarkIcon = document.querySelector('.mark-icon')
-    elMarkIcon.innerText = MARKED
-
-    lifeIconChange(false) // Life icon Change
-
-    gGame.revealedCount = 0 // Reveal Count
-    gGame.lives = 3 // Restart Lives
-    gGame.secsPassed = 0 // Restart Lives
-
-    // Reset Hacks 
-    gHacks.hints = 3 // Restart Hints
-
-    gHacks.megaHint.count = 1 // Restart megaHint
-    gHacks.megaHint.isOn = false
-
-    gHacks.removeMines = 1 // Restart RemoveMines
-    gRemoveMineCount = 3
-    removeMinesGlobalRestart()
-
-    gHacks.stepBack.count = 5 // Restart stepBack
-    gHacks.stepBack.recCount = 0 // Restart stepBack
-
-    gManualMines.isOn = false // Restart Manual Mine Placer
-    gManualMines.customMinesCoords = []
-
-    clearInterval(gScoreTimerInterval) // Stop Score Timer Interval
-
-    // Restart Cells Recorder
-    gStepCellsRecorder = {}
 
     // Restart Matrix
     onInit()
@@ -419,10 +271,5 @@ function restartGame() {
     if (stopwatchRunning) {
         toggleStopwatch()
     }
+    gGame.revealedCount = 0
 }
-
-
-
-
-
-

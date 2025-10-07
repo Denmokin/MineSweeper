@@ -1,68 +1,25 @@
 'use strict'
 
-// Global Arrays.
-var gEmptyCells = []
-
-
-// is Mine CLicked?
-function isMineClicked(coord, element) {
-
-    renderCell(coord, MINE) // Render Mine (DOM)
-    element.classList.add('boom') // Adds Red BG
-    gBoard[coord.i][coord.j].isMarked = true // If blow up mark cell
-
-    // Step Back Record
-    stepBackHackRecorder(coord)
-    gHacks.stepBack.recCount++
-
-    //Update counters
-    markCountUpdate(true)
-    lifeCountUpdate(true)
-
-    if (gGame.lives === 0) gameOver(true)
-
-    if (gGame.lives > 0) isVictory()
-
-    if (gGame.isOn) { // If game over don't change Face
-        faceChange(true) // Face When BlowUp
-    }
-    return
-}
-
 // Creates Array will all board Coordinates
 function getAllBoardCellCords(board) {
-    var arr = []
+    var boardCellsCords = []
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[i].length; j++) {
-            arr.push({ i: i, j: j })
+            boardCellsCords.push({ i: i, j: j })
         }
     }
-    return arr
+    return boardCellsCords
 }
 
-// Random Mine Places
-function randomMine(mineCount, coord) {
+// Random Mine Coord Finder
+function randomMine(mineCount) {
     const randMineCords = []
-    var cellCoords = gAllCellCoords.slice() // Copy of Global Coords 
-
-    console.log('cellCoords: ', cellCoords)
-
-    while (randMineCords.length !== mineCount) {
-        var n = (cellCoords.length - 1)
-        var randNum = randIntInclusive(0, n)
-        var randCoord = cellCoords[randNum]
-
-        // Skips the first click coord
-        if (randCoord.i === coord.i && randCoord.j === coord.j) {
-            cellCoords.splice(randNum, 1)
-            continue
-        }
-        randMineCords.push(randCoord)
-        cellCoords.splice(randNum, 1) // Remove only if used
+    var n = gBoardCellCoords.length
+    console.log('n: ', n)
+    for (var i = 0; i < mineCount; i++) {
+        randMineCords.push(gBoardCellCoords[randIntInclusive(0, n - 1)])
     }
-
-    gEmptyCells = cellCoords // gets Empty cell Cords (for HACKS)
-
+    console.log('randMineCords: ', randMineCords)
     return randMineCords
 }
 
