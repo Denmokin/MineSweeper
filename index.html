@@ -13,15 +13,13 @@
         rel="stylesheet">
     <!-- Google fonts END -->
 
-    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
-    <!-- CSS END -->
 
 </head>
 
 <body onload="onInit()">
 
-    <div oncontextmenu="disableContextMenu(event)" class="game-wrapper">
+    <main oncontextmenu="disableContextMenu(event)" class="game-wrapper">
         <div class="score-board-wrapper">
             <div class="score-board-container">
                 <h3>Score Board</h3>
@@ -80,22 +78,22 @@
                 <div class="options-btn-container">
                     <div onclick="hintRandomEmptyCell()" alt="Random Hint" class="btn options">💡
                         <div class="hint-count">0</div>
-                         <span class="tooltiptext">Random<br>Hint</span>
+                         <span class="tool-tip-txt">Random<br>Hint</span>
                     </div>
                     <div onclick="megaHintStarter()" alt="Mega Hint" class="btn options">🧿
                         <div class="megaHint-count">0</div>
-                        <span class="tooltiptext">Mega<br>Hint</span>
+                        <span class="tool-tip-txt">Mega<br>Hint</span>
                     </div>
                     <div onclick="removeMinesHack(gRemoveMineCount)" alt="Remove Mines" class="btn options">🧯
                         <div class="removeMines-count">0</div>
-                        <span class="tooltiptext">Remove<br>Mines</span>
+                        <span class="tool-tip-txt">Remove<br>Mines</span>
                     </div>
                     <div onclick="stepBackHack()" alt="Step Back" class="btn options">🔙
                         <div class="stepBack-count">0</div>
-                        <span class="tooltiptext">Step<br>Back</span>
+                        <span class="tool-tip-txt">Step<br>Back</span>
                     </div>
                     <div onclick="manualMinePlacerStarter()" alt="Manual Mine Placer" class="btn options">💣
-                        <span class="tooltiptext">Manual Mine<br>Placer</span>
+                        <span class="tool-tip-txt">Manual Mine<br>Placer</span>
                     </div>
                 </div>
             </div>
@@ -103,9 +101,9 @@
         </div>
 
 
-        <h3 class="creddits" oncontextmenu="addMoreHacks(event)"> By Denis<span class="underline"> Mokin</span></h3>
+        <h3 class="credits" oncontextmenu="addMoreHacks(event)"> By Denis<span class="underline"> Mokin</span></h3>
 
-    </div>
+    </main>
 
     <script src="js/game.js"></script>
     <script src="js/mines.js"></script>
