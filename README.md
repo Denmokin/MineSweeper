@@ -51,3 +51,8 @@ By Denis Mokin.
 
 - [Play the Game](https://denmokin.github.io/MineSweeper/)
 - [Source Code](https://github.com/DenMokin/MineSweeper)
+
+Version 2.0 - Added Recrusive Neighbor Reveal
+- Updates:
+- Added More suitable README file.
+- Added Recursive Neighbor Reveal Function.
